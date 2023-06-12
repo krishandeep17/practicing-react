@@ -17,7 +17,7 @@ const Stats = ({ items }) => {
         {percentPacked === 100
           ? "You got everything, ready to go! ✈️"
           : `
-            💼You have ${numItems} items in your list, and you already packed
+            🧳You have ${numItems} items in your list, and you already packed
             ${numPacked} (${percentPacked}%)
           `}
       </em>

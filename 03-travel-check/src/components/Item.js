@@ -5,16 +5,18 @@ const Item = ({ item, onDeleteItem, onCheckItem }) => {
       <input
         type="checkbox"
         value={packed}
+        id={id}
         onChange={() => {
           onCheckItem(id);
         }}
       />
-      <label style={packed ? { textDecoration: "line-through" } : {}}>
+      <label
+        htmlFor={id}
+        style={packed ? { textDecoration: "line-through" } : {}}
+      >
         {quantity} {description}
       </label>
-      <button style={{ color: "red" }} onClick={() => onDeleteItem(id)}>
-        X
-      </button>
+      <button onClick={() => onDeleteItem(id)}>&times;</button>
     </li>
   );
 };

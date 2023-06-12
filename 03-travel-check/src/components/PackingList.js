@@ -45,7 +45,9 @@ const PackingList = ({ items, onDeleteItem, onCheckItem, onClearList }) => {
           <option value="quantity">Sort by quantity</option>
           <option value="packed">Sort by packed status</option>
         </select>
-        <button onClick={onClearList}>Clear List</button>
+        <button className="btn-reset" onClick={onClearList}>
+          Clear List
+        </button>
       </div>
     </div>
   );

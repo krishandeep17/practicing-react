@@ -1,6 +1,6 @@
 import Form from "./Form";
-import Logo from "./Logo";
+import Header from "./Header";
 import PackingList from "./PackingList";
 import Stats from "./Stats";
 
-export { Form, Logo, PackingList, Stats };
+export { Form, Header, PackingList, Stats };

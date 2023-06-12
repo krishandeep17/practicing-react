@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import initialItems from "./data";
-import { Form, Logo, PackingList, Stats } from "./components";
+import { Form, Header, PackingList, Stats } from "./components";
 
 const App = () => {
   const [items, setItems] = useState(initialItems);
@@ -36,7 +36,7 @@ const App = () => {
 
   return (
     <div className="app">
-      <Logo />
+      <Header />
       <Form onAddItems={handleAddItems} />
       <PackingList
         items={items}
