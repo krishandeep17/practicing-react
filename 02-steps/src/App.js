@@ -6,6 +6,23 @@ const messages = [
   "Invest your new income 🤑",
 ];
 
+const Button = ({ type, step, handleClick, children }) => {
+  return (
+    <button
+      className={
+        type === "previous" && step > 1
+          ? "active"
+          : type === "next" && step < 3
+          ? "active"
+          : ""
+      }
+      onClick={handleClick}
+    >
+      {children}
+    </button>
+  );
+};
+
 const App = () => {
   const [step, setStep] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
@@ -40,15 +57,12 @@ const App = () => {
             Step {step}: {messages[step - 1]}
           </p>
           <div className="buttons">
-            <button
-              className={step > 1 ? "active" : ""}
-              onClick={handlePrevious}
-            >
-              Previous
-            </button>
-            <button className={step < 3 ? "active" : ""} onClick={handleNext}>
-              Next
-            </button>
+            <Button type="previous" step={step} handleClick={handlePrevious}>
+              <span>👈</span> Previous
+            </Button>
+            <Button type="next" step={step} handleClick={handleNext}>
+              Next <span>👉</span>
+            </Button>
           </div>
         </div>
       )}
