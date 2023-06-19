@@ -10,13 +10,9 @@ import {
 } from "./components";
 
 const App = () => {
-  const [showAddFriend, setShowAddFriend] = useState(false);
   const [friends, setFriends] = useState(initialFriends);
+  const [showAddFriend, setShowAddFriend] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
-
-  const handleShowAddFriend = () => {
-    setShowAddFriend((prevValue) => !prevValue);
-  };
 
   const handleAddFriend = (newFriend) => {
     setFriends((prevFriends) => [...prevFriends, newFriend]);
@@ -24,8 +20,14 @@ const App = () => {
     setShowAddFriend(false);
   };
 
+  const handleShowAddFriend = () => {
+    setShowAddFriend((prevValue) => !prevValue);
+  };
+
   const handleSelection = (friend) => {
-    setSelectedFriend((current) => (current?.id === friend.id ? null : friend));
+    setSelectedFriend((selectedFriend) =>
+      selectedFriend?.id === friend.id ? null : friend
+    );
 
     setShowAddFriend(false);
   };

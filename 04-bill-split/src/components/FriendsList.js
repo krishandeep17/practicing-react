@@ -1,9 +1,10 @@
 import Button from "./Button";
 
 const Friend = ({ friend, selectedFriend, onSelection }) => {
-  const { name, image, balance } = friend;
+  const { id, name, image, balance } = friend;
+
   return (
-    <li className={selectedFriend?.id === friend.id ? "selected" : ""}>
+    <li className={selectedFriend?.id === id ? "selected" : ""}>
       <img src={image} alt={name} />
       <h3 className="capitalize">{name}</h3>
       {balance < 0 ? (
@@ -19,7 +20,7 @@ const Friend = ({ friend, selectedFriend, onSelection }) => {
       )}
 
       <Button onClick={() => onSelection(friend)}>
-        {selectedFriend?.id === friend.id ? "Close" : "Select"}
+        {selectedFriend?.id === id ? "Close" : "Select"}
       </Button>
     </li>
   );
