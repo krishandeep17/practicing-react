@@ -9,14 +9,17 @@ const Friend = ({ friend, selectedFriend, onSelection }) => {
       <h3 className="capitalize">{name}</h3>
       {balance < 0 ? (
         <p className="red">
-          You owe {name} ₹{Math.abs(balance)}
+          You owe <span className="capitalize">{name}</span> ₹
+          {Math.abs(balance)}
         </p>
       ) : balance > 0 ? (
         <p className="green">
-          {name} owes you ₹{balance}
+          <span className="capitalize">{name}</span> owes you ₹{balance}
         </p>
       ) : (
-        <p>You and {name} are even</p>
+        <p>
+          You and <span className="capitalize">{name}</span> are even
+        </p>
       )}
 
       <Button onClick={() => onSelection(friend)}>

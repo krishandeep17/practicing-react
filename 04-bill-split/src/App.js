@@ -22,6 +22,8 @@ const App = () => {
 
   const handleShowAddFriend = () => {
     setShowAddFriend((prevValue) => !prevValue);
+
+    setSelectedFriend(null);
   };
 
   const handleSelection = (friend) => {
@@ -62,6 +64,7 @@ const App = () => {
 
       {selectedFriend && (
         <FormSplitBill
+          key={selectedFriend.id}
           selectedFriend={selectedFriend}
           onSplitBill={handleSplitBill}
         />

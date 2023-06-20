@@ -27,15 +27,17 @@ const FormAddFriend = ({ onAddFriend }) => {
 
   return (
     <form className="form-add-friend" onSubmit={handleSubmit}>
-      <label htmlFor="name">👯Friend name</label>
+      <label htmlFor="name">Friend name</label>
       <input
         type="text"
         id="name"
+        minlength="3"
+        maxlength="15"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
-      <label htmlFor="image">🖼️Image URL</label>
+      <label htmlFor="image">Image URL</label>
       <input
         type="url"
         id="image"

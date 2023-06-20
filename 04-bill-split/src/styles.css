@@ -1,4 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap");
+
 :root {
+  --color-text: #333;
   --color-lightest: #fff4e6;
   --color-light: #ffe8cc;
   --color-medium: #ffa94d;
@@ -9,43 +12,82 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+}
+
+::-moz-selection {
+  /* Code for Firefox */
+  color: var(--color-text);
+  background: var(--color-dark);
+}
+
+::selection {
+  color: var(--color-text);
+  background: var(--color-dark);
 }
 
 html {
   font-size: 62.5%;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
 }
 
 body {
-  height: 100vh;
-  color: #495057;
+  min-height: 100vh;
+  color: var(--color-text);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 500;
 }
 
 .app {
   min-height: 66vh;
   display: grid;
-  grid-template-columns: 34rem 44rem;
+  grid-template-columns: 38rem 44rem;
   column-gap: 4rem;
+  row-gap: 2rem;
   align-items: start;
+  margin: 4rem 2rem;
 }
 
-.button {
-  background-color: var(--color-medium);
-  color: #343a40;
-  padding: 0.8rem 1.2rem;
-  border: none;
+button,
+select,
+input {
+  color: var(--color-text);
   border-radius: 7px;
-  font-weight: bold;
+  padding: 0.8rem 1.2rem;
+  font-weight: 700;
+  font-size: 1.6rem;
   cursor: pointer;
+  text-transform: capitalize;
   transition: 0.3s;
+  text-align: center;
 }
 
-.button:hover {
+button {
+  border: none;
+  background-color: var(--color-medium);
+}
+
+input,
+select {
+  border: 1px solid var(--color-light);
+}
+
+input[type="url"] {
+  text-transform: lowercase;
+}
+
+button:hover {
   background-color: var(--color-dark);
+}
+
+button:focus,
+input:focus,
+select:focus {
+  outline: none;
+  border: 1px solid var(--color-dark);
 }
 
 .sidebar ul {
@@ -53,7 +95,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  font-size: 1.4rem;
   margin-bottom: 2rem;
 }
 
@@ -82,21 +123,57 @@ body {
 .sidebar li h3 {
   grid-row: 1;
   grid-column: 2;
+  font-size: 2.2rem;
 }
 
 .sidebar li p {
   grid-row: 2;
   grid-column: 2;
+  font-size: 1.6rem;
 }
 
-.sidebar li .button {
+.sidebar li button {
   grid-row: span 2;
   grid-column: 3;
 }
 
-.sidebar > .button {
-  float: right;
+.sidebar > button {
+  display: block;
+  margin-left: auto;
   margin-right: 1.2rem;
+}
+
+form {
+  display: grid;
+  align-items: center;
+  gap: 1.2rem;
+
+  background-color: var(--color-lightest);
+  border-radius: 7px;
+}
+
+.form-add-friend {
+  margin-bottom: 1.6rem;
+  padding: 1.2rem;
+}
+
+.form-split-bill {
+  grid-template-columns: 1fr 12rem;
+  padding: 3.2rem 4rem;
+}
+
+form button {
+  margin-top: 0.6rem;
+  grid-column: 2;
+}
+
+form h2 {
+  grid-column: 1 / -1;
+  font-size: 2.4rem;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.6rem;
 }
 
 .green {
@@ -107,72 +184,30 @@ body {
   color: #e03131;
 }
 
-form {
-  font-size: 1.6rem;
-  display: grid;
-  align-items: center;
-  gap: 1.2rem;
-
-  background-color: var(--color-lightest);
-  border-radius: 7px;
-}
-
-.form-add-friend {
-  grid-template-columns: 1fr 1.5fr;
-  margin-bottom: 1.6rem;
-  padding: 1.2rem;
-}
-.form-split-bill {
-  grid-template-columns: 1fr 12rem;
-  padding: 3.2rem 4rem;
-}
-
-label {
-  font-weight: 500;
-}
-
 .capitalize {
   text-transform: capitalize;
 }
 
-label::first-letter {
-  display: inline-block;
-  margin-right: 4px;
-  font-size: 1.8rem;
+@media (max-width: 75em) {
+  html {
+    font-size: 56.25%;
+  }
 }
 
-input,
-select {
-  font-family: inherit;
-  color: inherit;
-  text-transform: capitalize;
-  font-size: 1.5rem;
-  padding: 0.7rem;
-  text-align: center;
-  border: 1px solid var(--color-light);
-  border-radius: 4px;
-  transition: 0.3s;
+@media (max-width: 57em) {
+  html {
+    font-size: 50%;
+  }
 }
 
-input[type="url"] {
-  text-transform: lowercase;
+@media (max-width: 47em) {
+  .app {
+    grid-template-columns: 1fr;
+  }
 }
 
-input:focus,
-select:focus {
-  outline: none;
-  border: 1px solid var(--color-dark);
-}
-
-form .button {
-  margin-top: 0.6rem;
-  grid-column: 2;
-}
-
-form h2 {
-  grid-column: 1 / -1;
-  font-size: 2.2rem;
-  text-transform: uppercase;
-  letter-spacing: -0.5px;
-  margin-bottom: 1.6rem;
+@media (max-width: 22em) {
+  html {
+    font-size: 48%;
+  }
 }

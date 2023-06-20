@@ -1,6 +1,6 @@
 const Button = ({ children, onClick }) => {
   return (
-    <button type="submit" className="button" onClick={onClick}>
+    <button type="submit" onClick={onClick}>
       {children}
     </button>
   );
