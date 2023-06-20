@@ -31,6 +31,7 @@ const FormAddFriend = ({ onAddFriend }) => {
       <input
         type="text"
         id="name"
+        autocomplete="off"
         minlength="3"
         maxlength="15"
         value={name}
@@ -41,6 +42,7 @@ const FormAddFriend = ({ onAddFriend }) => {
       <input
         type="url"
         id="image"
+        autocomplete="off"
         value={image}
         onChange={(e) => setImage(e.target.value)}
       />
