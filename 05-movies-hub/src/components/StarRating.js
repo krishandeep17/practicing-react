@@ -3,7 +3,7 @@ import { useState } from "react";
 const containerStyle = {
   display: "flex",
   alignItems: "center",
-  gap: "16px",
+  gap: "8px",
 };
 
 const starContainerStyle = {
@@ -13,8 +13,8 @@ const starContainerStyle = {
 const Star = ({ onRate, full, onHoverIn, onHoverOut, color, size }) => {
   const starStyle = {
     display: "block",
-    width: `${size}px`,
-    height: `${size}px`,
+    width: `${size / 10}rem`,
+    height: `${size / 10}rem`,
     cursor: "pointer",
   };
 
@@ -74,7 +74,7 @@ const StarRating = ({
     lineHeight: "1",
     margin: "0",
     color,
-    fontSize: `${size / 1.5}px`,
+    fontSize: `${size / 15}rem`,
   };
 
   return (

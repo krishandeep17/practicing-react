@@ -1,20 +1,20 @@
-import {
-  Box,
-  MoviesList,
-  WatchedMoviesList,
-  WatchedSummary,
-  Main,
-} from "./Main";
-import { Logo, Search, NumResults, Navbar } from "./Navbar";
+import { Logo, SearchBar, NumResults } from "./Navbar";
+
+import ErrorMessage from "./ErrorMessage";
+import Loader from "./Loader";
+import MovieDetails from "./MovieDetails";
+import MoviesList from "./MovieList";
+import WatchedMoviesList from "./WatchedMoviesList";
+import WatchedSummary from "./WatchedSummary";
 
 export {
+  ErrorMessage,
+  Loader,
   Logo,
-  Search,
-  NumResults,
-  Navbar,
-  Box,
+  MovieDetails,
   MoviesList,
+  NumResults,
+  SearchBar,
   WatchedMoviesList,
   WatchedSummary,
-  Main,
 };

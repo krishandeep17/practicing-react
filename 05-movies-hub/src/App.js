@@ -1,41 +1,138 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { movieData, watchedData } from "./tempData";
 import {
+  ErrorMessage,
+  Loader,
   Logo,
-  Search,
-  NumResults,
-  Navbar,
-  Box,
+  MovieDetails,
   MoviesList,
+  NumResults,
+  SearchBar,
   WatchedMoviesList,
   WatchedSummary,
-  Main,
 } from "./components";
 
+const Navbar = ({ children }) => {
+  return <nav className="navbar">{children}</nav>;
+};
+
+const Main = ({ children }) => {
+  return <main className="main">{children}</main>;
+};
+
 const App = () => {
-  const [movies, setMovies] = useState(movieData);
-  const [watched, setWatched] = useState(watchedData);
+  const [query, setQuery] = useState("batman");
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedId, setSelectedId] = useState("");
+
+  const handleSelectedId = (id) => {
+    setSelectedId((prevId) => (prevId === id ? null : id));
+  };
+
+  const handleCloseMovie = () => setSelectedId(null);
+
+  const handleAddWatched = (movie) => {
+    setWatched((prevWatched) => [...prevWatched, movie]);
+  };
+
+  const handleRemoveWatched = (id) => {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchMovies = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_API_KEY}&s=${query}`,
+          {
+            signal: controller.signal,
+          }
+        );
+
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching movies");
+
+        const data = await res.json();
+
+        if (data.Response === "False") throw new Error("Movie not found!");
+
+        setMovies(data.Search);
+        setError("");
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.log(err.message);
+          setError(err.message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (query.length < 3) {
+      setMovies([]);
+      setError("");
+      return;
+    }
+
+    handleCloseMovie();
+    fetchMovies();
+
+    return () => {
+      controller.abort();
+    };
+  }, [query]);
 
   return (
-    <>
+    <div className="app">
       <Navbar>
         <Logo />
-        <Search />
+        <SearchBar query={query} setQuery={setQuery} />
         <NumResults movies={movies} />
       </Navbar>
 
       <Main>
-        <Box>
-          <MoviesList movies={movies} />
-        </Box>
+        <div className="box">
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <ErrorMessage message={error} />
+          ) : (
+            <MoviesList
+              movies={movies}
+              selectedId={selectedId}
+              onSelectedId={handleSelectedId}
+            />
+          )}
+        </div>
 
-        <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMoviesList watched={watched} />
-        </Box>
+        <div className="box">
+          {selectedId ? (
+            <MovieDetails
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
+              watched={watched}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMoviesList
+                watched={watched}
+                onRemoveWatched={handleRemoveWatched}
+              />
+            </>
+          )}
+        </div>
       </Main>
-    </>
+    </div>
   );
 };
 

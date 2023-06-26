@@ -1,38 +1,37 @@
-import { useState } from "react";
+import logo from "../assets/logo.png";
+import { ReactComponent as SearchIcon } from "../assets/search.svg";
 
 const Logo = () => {
   return (
     <div className="logo">
-      <span role="img">🍿</span>
-      <h1>usePopcorn</h1>
+      <img src={logo} alt="MovieHub Logo" />
+      <h1>MovieHub</h1>
     </div>
   );
 };
 
-const Search = () => {
-  const [query, setQuery] = useState("");
-
+const SearchBar = ({ query, setQuery }) => {
   return (
-    <input
-      className="search"
-      type="text"
-      placeholder="Search movies..."
-      value={query}
-      onChange={(e) => setQuery(e.target.value)}
-    />
+    <div className="search-bar">
+      <SearchIcon />
+      <input
+        autoComplete="off"
+        className="search-text"
+        type="text"
+        placeholder="Search movies..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+    </div>
   );
 };
 
 const NumResults = ({ movies }) => {
   return (
     <p className="num-results">
-      Found <strong>{movies.length}</strong> results
+      Search results: <strong>{movies.length}</strong>
     </p>
   );
 };
 
-const Navbar = ({ children }) => {
-  return <nav className="nav-bar">{children}</nav>;
-};
-
-export { Logo, Search, NumResults, Navbar };
+export { Logo, SearchBar, NumResults };
