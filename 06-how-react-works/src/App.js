@@ -18,28 +18,7 @@ const content = [
   },
 ];
 
-function Tabbed({ content }) {
-  const [activeTab, setActiveTab] = useState(0);
-
-  return (
-    <div>
-      <div className="tabs">
-        <Tab num={0} activeTab={activeTab} onClick={setActiveTab} />
-        <Tab num={1} activeTab={activeTab} onClick={setActiveTab} />
-        <Tab num={2} activeTab={activeTab} onClick={setActiveTab} />
-        <Tab num={3} activeTab={activeTab} onClick={setActiveTab} />
-      </div>
-
-      {activeTab <= 2 ? (
-        <TabContent item={content.at(activeTab)} />
-      ) : (
-        <DifferentContent />
-      )}
-    </div>
-  );
-}
-
-function Tab({ num, activeTab, onClick }) {
+const Tab = ({ num, activeTab, onClick }) => {
   return (
     <button
       className={activeTab === num ? "tab active" : "tab"}
@@ -48,15 +27,13 @@ function Tab({ num, activeTab, onClick }) {
       Tab {num + 1}
     </button>
   );
-}
+};
 
-function TabContent({ item }) {
+const TabContent = ({ item }) => {
   const [showDetails, setShowDetails] = useState(true);
   const [likes, setLikes] = useState(0);
 
-  function handleInc() {
-    setLikes(likes + 1);
-  }
+  const handleInc = () => setLikes(likes + 1);
 
   return (
     <div className="tab-content">
@@ -81,15 +58,37 @@ function TabContent({ item }) {
       </div>
     </div>
   );
-}
+};
 
-function DifferentContent() {
+const DifferentContent = () => {
   return (
     <div className="tab-content">
       <h4>I'm a DIFFERENT tab, so I reset state 💣💥</h4>
     </div>
   );
-}
+};
+
+const Tabbed = ({ content }) => {
+  const [activeTab, setActiveTab] = useState(0);
+
+  return (
+    <div>
+      <div className="tabs">
+        <Tab num={0} activeTab={activeTab} onClick={setActiveTab} />
+        <Tab num={1} activeTab={activeTab} onClick={setActiveTab} />
+        <Tab num={2} activeTab={activeTab} onClick={setActiveTab} />
+        <Tab num={3} activeTab={activeTab} onClick={setActiveTab} />
+      </div>
+
+      {activeTab <= 2 ? (
+        /* content.at(activeTab) is same as content[activeTab] */
+        <TabContent item={content.at(activeTab)} />
+      ) : (
+        <DifferentContent />
+      )}
+    </div>
+  );
+};
 
 const App = () => {
   return (
