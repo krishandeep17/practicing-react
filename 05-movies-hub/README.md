@@ -2,6 +2,8 @@
 
 MovieHub is a web application built with React that allows users to search for movies, rate them, and create a personalized watchlist. It provides a seamless and user-friendly experience for movie enthusiasts to discover, track, and manage their favorite films.
 
+To view the website, simply visit <https://moviehubbb.netlify.app>.
+
 ## Features
 
 - **Movie Search**: Users can search for movies by title, genre, or actor/actress name, leveraging a vast movie database.
