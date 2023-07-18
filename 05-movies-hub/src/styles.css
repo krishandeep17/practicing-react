@@ -24,7 +24,16 @@ html {
 body {
   color: var(--color-text);
   background-color: var(--color-background-900);
-  padding: 2.2rem;
+}
+
+.app {
+  padding: 2.4rem;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  gap: 2.4rem;
+  grid-template-rows: 8rem calc(100vh - 8rem - 2.4rem * 3);
+  grid-template-rows: 8rem calc(100svh - 8rem - 2.4rem * 3);
 }
 
 /* NAVBAR */
@@ -34,9 +43,9 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  padding: 1.6rem 3.2rem;
+  padding: 0 3.2rem;
   background-color: var(--color-primary);
-  border-radius: 0.9rem;
+  border-radius: 9px;
 }
 
 .logo {
@@ -56,36 +65,41 @@ body {
 }
 
 .search-bar {
+  display: flex;
+  align-items: center;
+  position: relative;
   width: 100%;
   max-width: 42rem;
-  position: relative;
 }
 
-.search-bar svg {
-  position: absolute;
-  left: 1.5rem;
-  width: 2rem;
-}
-
-.search-text {
-  line-height: 1;
-  border: none;
-  padding: 1rem 1.6rem 1.2rem 4.8rem;
-  font-size: 1.8rem;
-  border-radius: 0.7rem;
-  width: 100%;
-  transition: all 0.3s;
-  color: var(--color-text);
+.search-input {
   background-color: var(--color-primary-light);
+  border: none;
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: 1.8rem;
+  line-height: 1;
+  outline: none;
+  padding: 1.2rem 1.6rem 1.2rem 4.4rem;
+  transition: all 0.3s;
+  width: 100%;
 }
 
-.search-text::placeholder {
+.search-input::placeholder {
   color: var(--color-text-dark);
 }
 
-.search-text:focus {
+.search-input:focus {
   outline: none;
   box-shadow: 0 2.4rem 2.4rem rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.6rem;
+  fill: var(--color-text-dark);
+  width: 1.8rem;
+  height: 1.8rem;
 }
 
 .num-results {
@@ -95,8 +109,6 @@ body {
 /* MAIN */
 
 .main {
-  margin-top: 2.2rem;
-  height: calc(100vh - 7.68rem - 3 * 2.2rem);
   display: flex;
   gap: 2.4rem;
   justify-content: center;
@@ -112,8 +124,8 @@ body {
   width: 100%;
   max-width: 42rem;
   background-color: var(--color-background-500);
-  border-radius: 0.9rem;
-  overflow: scroll;
+  border-radius: 9px;
+  overflow-y: scroll;
   position: relative;
 }
 
@@ -205,7 +217,7 @@ body {
 
 .summary {
   padding: 2.2rem 3.2rem 1.8rem 3.2rem;
-  border-radius: 0.9rem;
+  border-radius: 9px;
   background-color: var(--color-background-100);
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.2);
 }
@@ -275,7 +287,7 @@ body {
 
 .rating {
   background-color: var(--color-background-100);
-  border-radius: 0.9rem;
+  border-radius: 9px;
   padding: 2rem 2.4rem;
   margin-bottom: 0.8rem;
   font-weight: 600;
@@ -289,7 +301,7 @@ body {
   background-color: var(--color-primary);
   color: var(--color-text);
   border: none;
-  border-radius: 10rem;
+  border-radius: 10px;
   font-size: 1.4rem;
   padding: 1rem;
   font-weight: bold;
@@ -368,3 +380,11 @@ body {
     font-size: 50%;
   }
 }
+
+/* 
+- Font sizes (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
+
+- Spacing system (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
+*/

@@ -16,7 +16,7 @@ const SearchBar = ({ query, setQuery }) => {
       <SearchIcon />
       <input
         autoComplete="off"
-        className="search-text"
+        className="search-input"
         type="text"
         placeholder="Search movies..."
         value={query}
