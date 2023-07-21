@@ -1,18 +1,26 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  font-family: sans-serif;
   color: #333;
+  font-family: sans-serif;
+  min-height: 100vh;
+  min-height: 100svh;
+  position: relative;
 }
 
 .container {
-  width: 600px;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -25%);
+  width: min(90%, 600px);
   background-color: #f7f7f7;
   border-radius: 7px;
   padding: 25px 100px;
-  margin: 100px auto;
 }
 
 .steps {
