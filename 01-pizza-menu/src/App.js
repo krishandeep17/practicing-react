@@ -36,7 +36,7 @@ const Footer = () => {
 
 const Pizza = ({ name, ingredients, price, image, soldOut }) => {
   return (
-    <li className={`pizza ${soldOut && "sold-out"}`}>
+    <li className={soldOut ? "pizza sold-out" : "pizza"}>
       <img src={image} alt={name} />
       <div>
         <h3>{name}</h3>
