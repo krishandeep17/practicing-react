@@ -6,6 +6,8 @@
   --color-background-100: #343a40;
   --color-background-500: #2b3035;
   --color-background-900: #212529;
+  --color-red: #fa5252;
+  --color-red-dark: #e03131;
 }
 
 * {
@@ -42,7 +44,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 2.4rem;
   padding: 0 3.2rem;
   background-color: var(--color-primary);
   border-radius: 9px;
@@ -114,13 +116,13 @@ body {
   justify-content: center;
 }
 
-.box::-webkit-scrollbar,
+.container::-webkit-scrollbar,
 .list::-webkit-scrollbar {
   display: none;
   scroll-behavior: smooth;
 }
 
-.box {
+.container {
   width: 100%;
   max-width: 42rem;
   background-color: var(--color-background-500);
@@ -193,6 +195,11 @@ body {
   gap: 2.4rem;
 }
 
+.list .flex {
+  gap: 0;
+  justify-content: space-between;
+}
+
 .list p {
   display: flex;
   align-items: center;
@@ -200,17 +207,21 @@ body {
 }
 
 .btn-delete {
-  position: absolute;
-  right: 2.6rem;
-  border: none;
   background: none;
-  width: 2.6rem;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s;
+  outline: none;
 }
 
-.btn-delete:hover {
-  transform: translateY(-1.6px);
+.btn-delete .delete-icon {
+  fill: var(--color-red);
+  width: 1.8rem;
+  height: 1.8rem;
+  transition: fill 0.3s;
+}
+
+.btn-delete:hover .delete-icon {
+  fill: var(--color-red-dark);
 }
 
 /* WATCHED SUMMARY */
@@ -287,7 +298,7 @@ body {
 
 .rating {
   background-color: var(--color-background-100);
-  border-radius: 9px;
+  border-radius: 0.9rem;
   padding: 2rem 2.4rem;
   margin-bottom: 0.8rem;
   font-weight: 600;
@@ -301,13 +312,12 @@ body {
   background-color: var(--color-primary);
   color: var(--color-text);
   border: none;
-  border-radius: 10px;
+  border-radius: 10rem;
   font-size: 1.4rem;
   padding: 1rem;
   font-weight: bold;
   cursor: pointer;
-  max-width: 260px;
-  width: 100%;
+  width: min(100%, 26rem);
   transition: all 0.3s;
 }
 
@@ -319,16 +329,28 @@ body {
   position: absolute;
   top: 0.6rem;
   left: 0.6rem;
-  border: none;
-  background: none;
-  width: 2.6rem;
-  cursor: pointer;
   z-index: 999;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 100%;
+  cursor: pointer;
+  outline: none;
+  padding: 0.6rem;
   transition: all 0.3s;
 }
 
 .btn-back:hover {
-  transform: translateX(-1.6px);
+  background-color: var(--color-primary-light);
+  transform: translateX(-0.16rem);
+}
+
+.back-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fill: var(--color-text);
+  width: 1.8rem;
+  height: 1.8rem;
 }
 
 /* MEDIA QUERIES */
@@ -337,14 +359,14 @@ body {
   html {
     font-size: 56.25%;
   }
+  .logo h1 {
+    font-size: 2rem;
+  }
 }
 
-@media (max-width: 49em) {
-  .logo h1 {
-    font-size: 2.2rem;
-  }
+@media (max-width: 47em) {
   .search-bar {
-    max-width: 430px;
+    max-width: 44rem;
   }
   .num-results {
     display: none;
@@ -354,9 +376,10 @@ body {
     align-items: center;
     justify-content: center;
   }
-  .box {
+  .container {
     max-width: 100%;
-    height: calc((100vh - 7.68rem - 3 * 2.2rem - 2.4rem) / 2);
+    height: calc((100vh - 8rem - 2.4rem * 3) / 2);
+    height: calc((100svh - 8rem - 2.4rem * 3) / 2);
   }
 }
 
@@ -370,8 +393,14 @@ body {
   .details section {
     padding: 2rem;
   }
+  .details-overview {
+    padding: 1.6rem 2.4rem;
+  }
+  .details-overview h2 {
+    font-size: 2rem;
+  }
   .rating {
-    padding: 1.8rem 1.6rem;
+    padding: 1.6rem 1.4rem;
   }
 }
 
@@ -380,11 +409,3 @@ body {
     font-size: 50%;
   }
 }
-
-/* 
-- Font sizes (px)
-10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
-
-- Spacing system (px)
-2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
-*/

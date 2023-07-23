@@ -99,7 +99,7 @@ const App = () => {
       </Navbar>
 
       <Main>
-        <div className="box">
+        <div className="container">
           {isLoading ? (
             <Loader />
           ) : error ? (
@@ -113,7 +113,7 @@ const App = () => {
           )}
         </div>
 
-        <div className="box">
+        <div className="container">
           {selectedId ? (
             <MovieDetails
               selectedId={selectedId}

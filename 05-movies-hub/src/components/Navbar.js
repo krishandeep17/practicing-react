@@ -29,7 +29,8 @@ const SearchBar = ({ query, setQuery }) => {
 const NumResults = ({ movies }) => {
   return (
     <p className="num-results">
-      Search results: <strong>{movies.length}</strong>
+      <span>Results: </span>
+      <strong>{movies.length}</strong>
     </p>
   );
 };

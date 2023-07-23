@@ -8,7 +8,12 @@ const WatchedMovie = ({ movie, onRemoveWatched }) => {
         src={poster !== "N/A" ? poster : "https://via.placeholder.com/40"}
         alt={`${title} poster`}
       />
-      <h3>{title}</h3>
+      <div>
+        <h3>{title}</h3>
+        <button className="btn-delete" onClick={() => onRemoveWatched(imdbID)}>
+          <DeleteIcon />
+        </button>
+      </div>
       <div>
         <p>
           <span>⭐️</span>
@@ -23,9 +28,6 @@ const WatchedMovie = ({ movie, onRemoveWatched }) => {
           <span>{runtime} min</span>
         </p>
       </div>
-      <button className="btn-delete" onClick={() => onRemoveWatched(imdbID)}>
-        <DeleteIcon />
-      </button>
     </li>
   );
 };
