@@ -40,14 +40,26 @@ body {
   font-size: 18px;
 }
 
-.steps .active,
-.buttons .active {
+.steps .active {
   background-color: #7950f2;
   color: #fff;
 }
 
-.buttons .active {
+.buttons button {
+  background-color: #7950f2;
+  color: #fff;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.buttons button:hover {
+  background-color: #6140c2;
+}
+
+.buttons button:disabled {
+  background-color: #e4dcfc;
+  color: #333;
+  cursor: default;
 }
 
 .message {
