@@ -6,36 +6,32 @@ const messages = [
   "Invest your new income 🤑",
 ];
 
-const Button = ({ type, step, onClick, children }) => {
+function Button({ disabled, onClick, children }) {
   return (
-    <button
-      onClick={onClick}
-      className={
-        type === "previous" && step > 1
-          ? "active"
-          : type === "next" && step < 3
-          ? "active"
-          : ""
-      }
-    >
+    <button disabled={disabled} onClick={onClick}>
       {children}
     </button>
   );
-};
+}
 
-const App = () => {
+export default function App() {
   const [step, setStep] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
 
-  const handlePrevious = () => {
-    if (step > 1) setStep((prevStep) => prevStep - 1);
-  };
+  const hasPrev = step > 1;
+  const hasNext = step < messages.length;
 
-  const handleNext = () => {
-    if (step < 3) {
+  function handlePrevious() {
+    if (hasPrev) {
+      setStep((prevStep) => prevStep - 1);
+    }
+  }
+
+  function handleNext() {
+    if (hasNext) {
       setStep((prevStep) => prevStep + 1);
     }
-  };
+  }
 
   return (
     <>
@@ -49,24 +45,25 @@ const App = () => {
       {isOpen && (
         <div className="container">
           <ul className="steps">
-            <li className={step >= 1 && "active"}>1</li>
-            <li className={step >= 2 && "active"}>2</li>
-            <li className={step >= 3 && "active"}>3</li>
+            {Array.from({ length: messages.length }, (_, i) => i + 1).map(
+              (num) => (
+                <li className={step >= num && "active"}>{num}</li>
+              )
+            )}
           </ul>
           <p className="message">
             Step {step}: {messages[step - 1]}
           </p>
           <div className="buttons">
-            <Button type="previous" step={step} onClick={handlePrevious}>
-              <span>👈</span> Previous
+            <Button disabled={!hasPrev} onClick={handlePrevious}>
+              👈 Previous
             </Button>
-            <Button type="next" step={step} onClick={handleNext}>
-              Next <span>👉</span>
+            <Button disabled={!hasNext} onClick={handleNext}>
+              Next 👉
             </Button>
           </div>
         </div>
       )}
     </>
   );
-};
-export default App;
+}
