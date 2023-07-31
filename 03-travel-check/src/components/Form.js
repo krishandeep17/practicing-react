@@ -35,7 +35,7 @@ const Form = ({ onAddItems }) => {
               {num}
             </option>
           ))}
-        </select>{" "}
+        </select>
         <input
           autoCapitalize="on"
           autoComplete="off"
