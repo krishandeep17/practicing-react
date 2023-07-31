@@ -7,7 +7,9 @@ const PackingList = ({ items, onDeleteItem, onCheckItem, onClearList }) => {
 
   let sortItems;
 
-  if (sortBy === "input") sortItems = items;
+  if (sortBy === "input") {
+    sortItems = items;
+  }
 
   // Sorting non-ASCII characters
   if (sortBy === "description") {
@@ -16,7 +18,7 @@ const PackingList = ({ items, onDeleteItem, onCheckItem, onClearList }) => {
       .sort((a, b) => a.description.localeCompare(b.description));
   }
 
-  // Sorting numbers
+  // Sorting numbers(quantity)
   if (sortBy === "quantity") {
     sortItems = items.slice().sort((a, b) => a.quantity - b.quantity);
   }
