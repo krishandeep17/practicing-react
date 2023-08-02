@@ -33,9 +33,9 @@ React elements look just like HTML, in fact they render the same equivalent HTML
 <h1>My Header</h1>
 <button>My Button</button>
 <ul>
-<li>list item 1</li>
-<li>list item 2</li>
-<li>list item 3</li>
+  <li>list item 1</li>
+  <li>list item 2</li>
+  <li>list item 3</li>
 </ul>
 ```
 
@@ -73,7 +73,7 @@ React elements just like HTML elements can use the `style` attribute, but you pa
 #### In HTML
 
 ```javascript
-<h1 style="color:blue;text-align:center">This is a header</h1>
+<h1 style="color: blue; text-align: center">This is a header</h1>
 ```
 
 #### In JSX
@@ -90,8 +90,8 @@ React has a special element called a fragment. It’s a special element that doe
 import { Fragment } from "react";
 
 <Fragment>
-  <h1> My H1 </h1>
-  <p> My Paragraph </p>
+  <h1>My H1</h1>
+  <p>My Paragraph</p>
 </Fragment>;
 ```
 
@@ -99,8 +99,8 @@ If you don’t want to import `Fragment` from the React library, you can also us
 
 ```javascript
 <>
-  <h1> My H1 </h1>
-  <p> My Paragraph </p>
+  <h1>My H1</h1>
+  <p>My Paragraph</p>
 </>
 ```
 
@@ -141,7 +141,7 @@ const MyComponent = () => {
 const MyOtherComponent = () => {
   return (
     <div>
-      <MyComponent />
+      <MyComponent /> // <h1>My Component</h1>
       <p>Sample Text</p>
     </div>
   );
@@ -189,7 +189,7 @@ passed in as `children`.
 
 ```javascript
 const Greeting = ({ children }) => {
-  return children; //<h1> Hello World! </h1>
+  return children; // <h1>Hello World!</h1>
 };
 
 const App = () => {
@@ -207,8 +207,10 @@ We can render it anywhere in our component’s JSX! Just remember that it’s a 
 const GreetingCard = ({ children }) => {
   return (
     <div>
-      <h1> Greetings! </h1>
+      <h1>Greetings!</h1>
       {children}
+      // <p>Example Children Paragraph</p>
+      // <button>Example Children Button</button>
     </div>
   );
 };
@@ -217,7 +219,7 @@ const App = () => {
   return (
     <GreetingCard>
       <p>Example Children Paragraph</p>
-      <button> Example Children Button</button>
+      <button>Example Children Button</button>
     </GreetingCard>
   );
 };
@@ -230,16 +232,16 @@ Since our components are written in JSX which is just javascript, we can conditi
 ```javascript
 const Greeting = ({ large }) => {
   if (large) {
-    return <h1> Hello World! </h1>;
+    return <h1>Hello World!</h1>;
   }
-  return <p> Hello World! </p>;
+  return <p>Hello World!</p>;
 };
 
 const App = () => {
   return (
     <div>
-      <Greeting large={true} /> // <h1> Hello World! </h1>
-      <Greeting large={false} /> // <p> Hello World! </p>
+      <Greeting large={true} /> // <h1>Hello World!</h1>
+      <Greeting large={false} /> // <p>Hello World!</p>
     </div>
   );
 };
@@ -249,14 +251,14 @@ We can also use a ternary operator!
 
 ```javascript
 const Greeting = ({ large }) => {
-  return large ? <h1> Hello World! </h1> : <p> Hello World! </p>;
+  return large ? <h1>Hello World!</h1> : <p>Hello World!</p>;
 };
 
 const App = () => {
   return (
     <div>
-      <Greeting large={true} /> // <h1> Hello World! </h1>
-      <Greeting large={false} /> // <p> Hello World! </p>
+      <Greeting large={true} /> // <h1>Hello World!</h1>
+      <Greeting large={false} /> // <p>Hello World!</p>
     </div>
   );
 };
@@ -266,13 +268,13 @@ In a component, if we return null nothing will render to the DOM.
 
 ```javascript
 const Greeting = ({ display, message }) => {
-  return display ? <h1> {message} </h1> : null;
+  return display ? <h1>{message}</h1> : null;
 };
 
 const App = () => {
   return (
     <div>
-      <Greeting message="rendered!" display={true} /> // <h1> rendered! </h1>
+      <Greeting message="rendered!" display={true} /> // <h1>rendered!</h1>
       <Greeting message="not rendered!" display={false} /> // nothing rendered
     </div>
   );
@@ -299,12 +301,12 @@ const ShoppingList = ({ items }) => {
 
 const App = () => {
   const groceries = ["broccoli", "carrots", "chicken", "garlic"];
+
   return <ShoppingList items={groceries} />;
 };
 ```
 
-**_IMPORTANT REMINDER_**
-
+> **_IMPORTANT REMINDER_**  
 > Remember, when mapping over an array into JSX, you **must** include a `key` attribute with a unique value. It’s tempting to use the index from `map` but this may cause issues down the road.
 
 The reason is because React uses the key to determine which components to re-render, with the keys themselves being unique identifiers hence why the values need to be unique. Indexes are just numbers and in lists where there are multiple maps, if you always use the index as the key React may get confused.
@@ -317,10 +319,11 @@ const ShoppingList = () => {
   return (
     <ul>
       {vegetables.map((veg, idx) => (
-        <li key={idx}> {veg} </li>
+        <li key={idx}>{veg}</li>
       ))}
+
       {meats.map((meat, idx) => (
-        <li key={idx}> {meat} </li>
+        <li key={idx}>{meat}</li>
       ))}
     </ul>
   );
@@ -340,10 +343,11 @@ const ShoppingList = () => {
   return (
     <ul>
       {vegetables.map((veg) => {
-        <li key={veg}> {veg} </li>;
+        <li key={veg}>{veg}</li>;
       })}
+
       {meats.map((meat) => {
-        <li key={meat}> {meat} </li>;
+        <li key={meat}>{meat}</li>;
       })}
     </ul>
   );
@@ -387,13 +391,15 @@ import { useState } from "react";
 
 const Counter = () => {
   const [count, setCount] = useState(0);
+
   const increment = () => setCount(count + 1);
   const decrement = () => setCount(count - 1);
+
   return (
     <div>
       {count}
-      <button onClick={increment}> increment </button>
-      <button onClick={decrement}> decrement </button>
+      <button onClick={increment}>increment</button>
+      <button onClick={decrement}>decrement</button>
     </div>
   );
 };
@@ -438,15 +444,17 @@ import { useState, useEffect } from "react";
 
 const UserList = () => {
   const [userList, setUserList] = useState([]);
+
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
       .then((users) => setUserList(users));
   }, []);
+
   return (
     <div>
       {userList.map((user) => (
-        <h2 key={user.id}> {user.name} </h2>
+        <h2 key={user.id}>{user.name}</h2>
       ))}
     </div>
   );
@@ -462,15 +470,17 @@ import { useState, useEffect } from "react";
 
 const UserList = ({ sourceURL }) => {
   const [userList, setUserList] = useState([]);
+
   useEffect(() => {
     fetch(sourceURL)
       .then((response) => response.json())
       .then((users) => setUserList(users));
   }, [sourceURL]);
+
   return (
     <div>
       {userList.map((user) => (
-        <h2 key={user.id}> {user.name} </h2>
+        <h2 key={user.id}>{user.name}</h2>
       ))}
     </div>
   );
@@ -489,8 +499,8 @@ const UserList = () => {
   const [userName, setUserName] = useState("");
   const [user, setUser] = useState(null);
 
-  const handleTextChange = (event) => {
-    setUserName(event.target.value);
+  const handleTextChange = (e) => {
+    setUserName(e.target.value);
   };
 
   useEffect(() => {
@@ -499,7 +509,7 @@ const UserList = () => {
 
   return (
     <div>
-      <h2> Search by username </h2>
+      <h2>Search by username</h2>
       <input type="text" onChange={handleTextChange} />
       <User user={user} />
     </div>
