@@ -8,7 +8,7 @@ const WatchedMovie = ({ movie, onRemoveWatched }) => {
         src={poster !== "N/A" ? poster : "https://via.placeholder.com/40"}
         alt={`${title} poster`}
       />
-      <div>
+      <div style={{ justifyContent: "space-between" }}>
         <h3>{title}</h3>
         <button className="btn-delete" onClick={() => onRemoveWatched(imdbID)}>
           <DeleteIcon />
