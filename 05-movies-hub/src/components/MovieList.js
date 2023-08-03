@@ -1,10 +1,10 @@
-const Movie = ({ movie, selectedId, onSelectedId }) => {
+const Movie = ({ movie, selectedId, handleSelectedId }) => {
   const { imdbID, Title, Year, Poster } = movie;
 
   return (
     <li
-      className={selectedId === imdbID ? "selected" : ""}
-      onClick={() => onSelectedId(imdbID)}
+      className={selectedId === imdbID && "selected"}
+      onClick={() => handleSelectedId(imdbID)}
     >
       <img
         src={Poster !== "N/A" ? Poster : "https://via.placeholder.com/40"}
@@ -21,7 +21,7 @@ const Movie = ({ movie, selectedId, onSelectedId }) => {
   );
 };
 
-const MoviesList = ({ movies, selectedId, onSelectedId }) => {
+const MoviesList = ({ movies, selectedId, handleSelectedId }) => {
   return (
     <ul className="list list-movies">
       {movies?.map((movie) => (
@@ -29,7 +29,7 @@ const MoviesList = ({ movies, selectedId, onSelectedId }) => {
           key={movie.imdbID}
           movie={movie}
           selectedId={selectedId}
-          onSelectedId={onSelectedId}
+          handleSelectedId={handleSelectedId}
         />
       ))}
     </ul>

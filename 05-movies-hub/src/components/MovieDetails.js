@@ -4,7 +4,12 @@ import { ReactComponent as BackIcon } from "../assets/back.svg";
 import Loader from "./Loader";
 import StarRating from "./StarRating";
 
-const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
+const MovieDetails = ({
+  selectedId,
+  handleCloseMovie,
+  handleAddWatched,
+  watched,
+}) => {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState(0);
@@ -39,31 +44,20 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
       userRating,
     };
 
-    onAddWatched(newWatchedMovie);
-    onCloseMovie();
+    handleAddWatched(newWatchedMovie);
+    handleCloseMovie();
   };
 
-  useEffect(() => {
-    const callback = (e) => {
-      if (e.code === "Escape") {
-        onCloseMovie();
-      }
-    };
-
-    document.addEventListener("keydown", callback);
-
-    return () => {
-      document.removeEventListener("keydown", callback);
-    };
-  }, [onCloseMovie]);
-
+  // Fetch movie data whose imdbID = selectedId
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         setIsLoading(true);
+
         const res = await fetch(
           `https://www.omdbapi.com/?apikey=${process.env.REACT_APP_API_KEY}&i=${selectedId}`
         );
+
         const data = await res.json();
 
         setMovie(data);
@@ -75,6 +69,7 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
     fetchMovies();
   }, [selectedId]);
 
+  // Change website title with the movie title
   useEffect(() => {
     if (!title) return;
     document.title = `MovieHub | ${title}`;
@@ -84,6 +79,21 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
     };
   }, [title]);
 
+  // Close the movie on pressing `Esc` button
+  useEffect(() => {
+    const callback = (e) => {
+      if (e.code === "Escape") {
+        handleCloseMovie();
+      }
+    };
+
+    document.addEventListener("keydown", callback);
+
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [handleCloseMovie]);
+
   return (
     <div className="details">
       {isLoading ? (
@@ -91,7 +101,11 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
       ) : (
         <>
           <header>
-            <button className="btn-back" onClick={onCloseMovie}>
+            <button
+              title="back"
+              className="btn-back"
+              onClick={handleCloseMovie}
+            >
               <BackIcon />
             </button>
             <img

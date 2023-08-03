@@ -78,7 +78,7 @@ const App = () => {
 
     if (query.length < 3) {
       setMovies([]);
-      setError("");
+      setError("Type at least three characters in the search field!");
       return;
     }
 
@@ -108,7 +108,7 @@ const App = () => {
             <MoviesList
               movies={movies}
               selectedId={selectedId}
-              onSelectedId={handleSelectedId}
+              handleSelectedId={handleSelectedId}
             />
           )}
         </div>
@@ -118,8 +118,8 @@ const App = () => {
             <MovieDetails
               key={selectedId}
               selectedId={selectedId}
-              onCloseMovie={handleCloseMovie}
-              onAddWatched={handleAddWatched}
+              handleCloseMovie={handleCloseMovie}
+              handleAddWatched={handleAddWatched}
               watched={watched}
             />
           ) : (
@@ -127,7 +127,7 @@ const App = () => {
               <WatchedSummary watched={watched} />
               <WatchedMoviesList
                 watched={watched}
-                onRemoveWatched={handleRemoveWatched}
+                handleRemoveWatched={handleRemoveWatched}
               />
             </>
           )}
