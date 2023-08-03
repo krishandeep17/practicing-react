@@ -3,14 +3,14 @@ import { useState } from "react";
 const containerStyle = {
   display: "flex",
   alignItems: "center",
-  gap: "8px",
+  gap: "0.8rem",
 };
 
 const starContainerStyle = {
   display: "flex",
 };
 
-const Star = ({ onRate, full, onHoverIn, onHoverOut, color, size }) => {
+const Star = ({ color, size, onClick, onMouseEnter, onMouseLeave, full }) => {
   const starStyle = {
     display: "block",
     width: `${size / 10}rem`,
@@ -22,9 +22,9 @@ const Star = ({ onRate, full, onHoverIn, onHoverOut, color, size }) => {
     <span
       role="button"
       style={starStyle}
-      onClick={onRate}
-      onMouseEnter={onHoverIn}
-      onMouseLeave={onHoverOut}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {full ? (
         <svg
@@ -60,14 +60,14 @@ const StarRating = ({
   size = 48,
   messages = [],
   defaultRating = 0,
-  onSetRating,
+  setUserRating,
 }) => {
   const [rating, setRating] = useState(defaultRating);
   const [tempRating, setTempRating] = useState(0);
 
   const handleRating = (rating) => {
     setRating(rating);
-    onSetRating(rating);
+    setUserRating(rating);
   };
 
   const textStyle = {
@@ -75,6 +75,7 @@ const StarRating = ({
     margin: "0",
     color,
     fontSize: `${size / 15}rem`,
+    width: `${size / 15}rem`,
   };
 
   return (
@@ -85,9 +86,9 @@ const StarRating = ({
             key={i}
             color={color}
             size={size}
-            onRate={() => handleRating(i + 1)}
-            onHoverIn={() => setTempRating(i + 1)}
-            onHoverOut={() => setTempRating(0)}
+            onClick={() => handleRating(i + 1)}
+            onMouseEnter={() => setTempRating(i + 1)}
+            onMouseLeave={() => setTempRating(0)}
             full={tempRating ? tempRating >= i + 1 : rating >= i + 1}
           />
         ))}
