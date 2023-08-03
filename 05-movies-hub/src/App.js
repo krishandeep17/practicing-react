@@ -116,6 +116,7 @@ const App = () => {
         <div className="container">
           {selectedId ? (
             <MovieDetails
+              key={selectedId}
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
               onAddWatched={handleAddWatched}

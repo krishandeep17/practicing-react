@@ -120,7 +120,7 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
                   <StarRating
                     maxRating={10}
                     size={24}
-                    onSetRating={setUserRating}
+                    setUserRating={setUserRating}
                   />
                   {userRating > 0 && (
                     <button className="btn-add" onClick={handleAdd}>
