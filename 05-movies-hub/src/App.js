@@ -23,10 +23,13 @@ const Main = ({ children }) => {
 const App = () => {
   const [query, setQuery] = useState("batman");
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState("");
+  const [watched, setWatched] = useState(() => {
+    const storedValue = localStorage.getItem("watched");
+    return storedValue ? JSON.parse(storedValue) : [];
+  });
 
   const handleSelectedId = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
@@ -89,6 +92,10 @@ const App = () => {
       controller.abort();
     };
   }, [query]);
+
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
   return (
     <div className="app">
