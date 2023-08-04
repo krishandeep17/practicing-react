@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useKey } from "../hooks";
+
 import { ReactComponent as BackIcon } from "../assets/back.svg";
 import Loader from "./Loader";
 import StarRating from "./StarRating";
@@ -80,19 +82,7 @@ const MovieDetails = ({
   }, [title]);
 
   // Close the movie on pressing `Esc` button
-  useEffect(() => {
-    const callback = (e) => {
-      if (e.code === "Escape") {
-        handleCloseMovie();
-      }
-    };
-
-    document.addEventListener("keydown", callback);
-
-    return () => {
-      document.removeEventListener("keydown", callback);
-    };
-  }, [handleCloseMovie]);
+  useKey("Escape", handleCloseMovie);
 
   return (
     <div className="details">

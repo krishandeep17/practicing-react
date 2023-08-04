@@ -1,4 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+
+import { useKey } from "../hooks";
 
 import logo from "../assets/logo.png";
 import { ReactComponent as SearchIcon } from "../assets/search.svg";
@@ -16,20 +18,12 @@ const SearchBar = ({ query, setQuery }) => {
   const inputEl = useRef(null);
 
   // Focus search input on pressing `Enter` button
-  useEffect(() => {
-    const callback = (e) => {
-      if (e.code === "Enter" && document.activeElement !== inputEl.current) {
-        inputEl.current.focus();
-        setQuery("");
-      }
-    };
+  useKey("Enter", () => {
+    if (document.activeElement === inputEl.current) return;
 
-    document.addEventListener("keydown", callback);
-
-    return () => {
-      document.addEventListener("keydown", callback);
-    };
-  }, [setQuery]);
+    inputEl.current.focus();
+    setQuery("");
+  });
 
   return (
     <div className="search-bar">
