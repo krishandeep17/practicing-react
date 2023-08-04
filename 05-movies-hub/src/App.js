@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { useMovies } from "./hooks";
+import { useLocalStorage, useMovies } from "./hooks";
 
 import {
   ErrorMessage,
@@ -25,11 +25,8 @@ const Main = ({ children }) => {
 const App = () => {
   const [query, setQuery] = useState("batman");
   const [selectedId, setSelectedId] = useState("");
-  const [watched, setWatched] = useState(() => {
-    const storedValue = localStorage.getItem("watched");
-    return storedValue ? JSON.parse(storedValue) : [];
-  });
   const { movies, isLoading, error } = useMovies(query);
+  const [watched, setWatched] = useLocalStorage([], "watched");
 
   const handleSelectedId = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
@@ -44,10 +41,6 @@ const App = () => {
   const handleRemoveWatched = (id) => {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   };
-
-  useEffect(() => {
-    localStorage.setItem("watched", JSON.stringify(watched));
-  }, [watched]);
 
   return (
     <div className="app">

@@ -1,3 +1,4 @@
+import useLocalStorage from "./useLocalStorage";
 import useMovies from "./useMovies";
 
-export { useMovies };
+export { useLocalStorage, useMovies };
