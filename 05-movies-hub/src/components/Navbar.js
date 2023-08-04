@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import logo from "../assets/logo.png";
 import { ReactComponent as SearchIcon } from "../assets/search.svg";
 
@@ -11,6 +13,24 @@ const Logo = () => {
 };
 
 const SearchBar = ({ query, setQuery }) => {
+  const inputEl = useRef(null);
+
+  // Focus search input on pressing `Enter` button
+  useEffect(() => {
+    const callback = (e) => {
+      if (e.code === "Enter" && document.activeElement !== inputEl.current) {
+        inputEl.current.focus();
+        setQuery("");
+      }
+    };
+
+    document.addEventListener("keydown", callback);
+
+    return () => {
+      document.addEventListener("keydown", callback);
+    };
+  }, [setQuery]);
+
   return (
     <div className="search-bar">
       <SearchIcon />
@@ -21,6 +41,7 @@ const SearchBar = ({ query, setQuery }) => {
         placeholder="Search movies..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        ref={inputEl}
       />
     </div>
   );
