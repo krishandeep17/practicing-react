@@ -420,16 +420,18 @@ state.
 2. The second argument is an array called the _dependency array_ which contains values from outside the scope of the effect function. Whenever one of these values changes, `useEffect` will run the effect function.
 
 ```javascript
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 const MyComponent = () => {
-
- useEffect(() => {
-
-  // side effect code here
-
- }, [// dependencies go here]);
-}
+  useEffect(
+    () => {
+      // side effect code here
+    },
+    [
+      // dependencies go here
+    ]
+  );
+};
 ```
 
 The _effect function_ will run
@@ -439,26 +441,50 @@ The _effect function_ will run
 
 A common use case for `useEffect` is to fetch some data and store it in a state variable.
 
-```javascript
+```js
 import { useState, useEffect } from "react";
 
-const UserList = () => {
-  const [userList, setUserList] = useState([]);
+const url = "https://api.github.com/users";
+
+const FetchData = () => {
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((users) => setUserList(users));
+    // you can also setup function outside
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const users = await response.json();
+        setUsers(users);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
   }, []);
 
   return (
-    <div>
-      {userList.map((user) => (
-        <h2 key={user.id}>{user.name}</h2>
-      ))}
-    </div>
+    <section>
+      <h3>github users</h3>
+      <ul className="users">
+        {users.map((user) => {
+          const { id, login, avatar_url, html_url } = user;
+          return (
+            <li key={id}>
+              <img src={avatar_url} alt={login} />
+              <div>
+                <h5>{login}</h5>
+                <a href={html_url}>profile</a>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 };
+
+export default FetchData;
 ```
 
 Passing an empty _dependency array_ will only call our _effect function_ once during the mounting phase since there are no dependencies to react to.
@@ -517,17 +543,105 @@ const UserList = () => {
 };
 ```
 
+#### Cleanup Function
+
 If we want to run a callback when the component unmounts, we can do so by returning that callback from the _effect function_. This is useful for cleanup functions that need to undo effects like subscriptions.
 
-```javascript
-useEffect(() => {
-  ChatAPI.subscribeToUser(userID);
+```js
+import { useEffect, useState } from "react";
 
-  return () => {
-    // This function runs on unmount
-    ChatAPI.unsubscribeFromUser(userID);
-  };
-}, []);
+const CleanupFunction = () => {
+  const [toggle, setToggle] = useState(false);
+
+  return (
+    <div>
+      <button className="btn" onClick={() => setToggle(!toggle)}>
+        toggle component
+      </button>
+      {toggle && <RandomComponent />}
+    </div>
+  );
+};
+
+const RandomComponent = () => {
+  useEffect(() => {
+    const intID = setInterval(() => {
+      console.log("hello from interval");
+    }, 1000);
+    // does not stop, keeps going
+    // every time we render component new interval gets created
+    return () => clearInterval(intID);
+  }, []);
+
+  return <h1>hello there</h1>;
+};
+
+export default CleanupFunction;
 ```
 
 It’s important to note, the _effect function_ runs _after_ React renders/re-renders the component to ensure our effect callback does not block browser painting.
+
+## useRef
+
+**`useRef` is a hook that stores a value in a component like `useState` except changes to that value won’t cause the component to re-render.**
+
+It accepts one argument as the initial value and returns a _reference_ object.
+
+```js
+import { useRef } from "react";
+
+const MyComponent = () => {
+  const ref = useRef(initialValue);
+
+  // ...remaining component code
+};
+```
+
+The value of `ref` is:
+
+```js
+{
+  current: initialValue;
+}
+```
+
+We can access and mutate the current value of the ref through the `ref.current` property. This value will persist across re-renders.
+
+```js
+import { useRef } from "react";
+
+export default function Counter() {
+  let ref = useRef(0);
+
+  function handleClick() {
+    ref.current = ref.current + 1;
+  }
+
+  return (
+    <>
+      <h1>count: {ref.current} </h1>
+      <button onClick={handleClick}>Click me!</button>
+    </>
+  );
+}
+```
+
+Every time we click the button and trigger `handleClick` , we are incrementing the `ref.current` value. However, because this mutation does not trigger the component to re-render, so the count does not update in the DOM even though the stored value is updating.
+
+It is common to store DOM node references in a ref.
+
+```js
+import { useRef, useEffect } from "react";
+
+function InputFocus() {
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  return <input ref={inputRef} type="text" />;
+}
+```
+
+When the `InputFocus` component mounts, we will call on the DOM node for the input and automatically focus it.
