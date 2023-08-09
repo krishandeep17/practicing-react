@@ -18,6 +18,8 @@
 - [Hooks](#hooks)
   - [useState](#usestate)
   - [useEffect](#useeffect)
+  - [useRef](#useref)
+  - [Custom Hooks](#custom-hooks)
 
 ## JSX
 
@@ -645,3 +647,31 @@ function InputFocus() {
 ```
 
 When the `InputFocus` component mounts, we will call on the DOM node for the input and automatically focus it.
+
+## Custom Hooks
+
+- Allow us to reuse **non-visual logic** in multiple components
+- One custom hook should have **one purpose**, to make it **reusable** and **portable** (even across multiple projects)
+- **Rules of hooks** apply to custom hooks too
+
+```js
+// Needs to use one or more hooks
+import { useEffect, useState } from "react";
+
+// Function name needs to start with use - `useLocalStorage`
+const useLocalStorage = (initialState, key) => {
+  const [value, setValue] = useState(() => {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : initialState;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [value, key]);
+
+  return [value, setValue];
+  // Unlike components, can receive and return any relevant data (usually [] or {})
+};
+
+export default useLocalStorage;
+```
