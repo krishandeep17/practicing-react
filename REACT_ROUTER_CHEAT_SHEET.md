@@ -35,26 +35,25 @@ npm i react-router-dom
 
 ### Setup The Router
 
+Wrap your `App` component inside `BrowserRouter` so that you can do
+routing and use all the custom hooks from React Router in your entire
+application.
+
 ```js
 // main.jsx
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom"; // 👈🏻
 
-import "./styles.css";
-import App from "./App";
+import App from "./App.jsx";
+import "./index.css";
 
-const root = createRoot(document.getElementById("root"));
-
-root.render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <BrowserRouter>
-      // Wrap your `App` component inside `BrowserRouter` so that you can do
-      routing and use all the custom hooks from React Router in your entire
-      application.
       <App />
     </BrowserRouter>
-  </StrictMode>
+  </React.StrictMode>
 );
 ```
 
@@ -117,7 +116,9 @@ import { useParams } from "react-router-dom";
 export default function Book() {
   const { id } = useParams();
 
-  return <h1>Book {id}</h1>; // https://.../books/256 -> Book 256;
+  return (
+    <h1>Book {id}</h1>{/* https://.../books/256 -> Book 256 */}
+  );
 }
 ```
 
@@ -144,8 +145,8 @@ A `*` will match anything at all which makes it perfect for things like a 404 pa
 
 ```js
 <Route path="/books">
-  <Route index element={<BookList />} /> // index is same as path="/"
-  <Route path=":id" element={<Book />} /> // same as path="/books/:id"
+  <Route index element={<BookList />} /> {/* index is same as path="/" */}
+  <Route path=":id" element={<Book />} /> {/* same as path="/books/:id" */}
   <Route path="new" element={<NewBook />} />
 </Route>
 ```
@@ -183,6 +184,7 @@ export default function BooksLayout() {
         </ul>
       </nav>
 
+      {/* Renders the child route's element, if there is one. */}
       <Outlet />
     </>
   );
@@ -230,8 +232,8 @@ export default function Book() {
   // `useOutletContext` hook to access the value for our context.
 
   return (
-    <h1>Book {id}</h1> // https://.../books/256 -> Book 256
-    <p>{context.message}</p> // hey there!
+    <h1>Book {id}</h1> {/* https://.../books/256 -> Book 256 */}
+    <p>{context.message}</p> {/* hey there! */}
   );
 }
 ```
@@ -348,14 +350,16 @@ import { useSearchParams, Link } from "react-router-dom";
 const location = useLocation();
 
 console.log(location);
-// URL -> `http://localhost/books?n=32#id`
-//   {
-//   pathname: "/books",
-//   search: "?n=32",
-//   hash: "#id",
-//   key: "2JH3G3S",
-//   state: { name: "Kyle" }
-// }
+/*
+URL -> `http://localhost/books?n=32#id`
+{
+  pathname: "/books",
+  search: "?n=32",
+  hash: "#id",
+  key: "2JH3G3S",
+  state: { name: "Kyle" }
+}
+*/
 
 return(
   <Link to="/books" state={{ name: "Kyle" }}>
