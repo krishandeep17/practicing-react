@@ -1,15 +1,16 @@
 import { createContext, useContext, useState } from "react";
 
-import randomPosts from "./utils/randomPosts";
+import { useSearchContext } from "./SearchContext";
+import { randomPosts } from "../utils/randomPosts";
 
 // 1) CREATE A CONTEXT
 const PostContext = createContext();
 
-function PostProvider({ children }) {
+export function PostProvider({ children }) {
   const [posts, setPosts] = useState(() =>
     Array.from({ length: 30 }, () => randomPosts())
   );
-  const [searchQuery, setSearchQuery] = useState("");
+  const { searchQuery } = useSearchContext();
 
   // Derived state. These are the posts that will actually be displayed
   const searchedPosts =
@@ -28,15 +29,14 @@ function PostProvider({ children }) {
   function handleClearPosts() {
     setPosts([]);
   }
+
   return (
     // 2) PROVIDE VALUE TO THE CHILD COMPONENTS
     <PostContext.Provider
       value={{
         posts: searchedPosts,
-        onAddPost: handleAddPost,
-        onClearPosts: handleClearPosts,
-        searchQuery,
-        setSearchQuery,
+        handleAddPost,
+        handleClearPosts,
       }}
     >
       {children}
@@ -44,7 +44,8 @@ function PostProvider({ children }) {
   );
 }
 
-function usePosts() {
+// CUSTOM HOOK
+export function usePostContext() {
   const context = useContext(PostContext);
 
   if (context === undefined)
@@ -52,5 +53,3 @@ function usePosts() {
 
   return context;
 }
-
-export { PostProvider, usePosts };

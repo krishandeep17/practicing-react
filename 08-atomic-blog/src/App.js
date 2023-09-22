@@ -1,4 +1,5 @@
-import { PostProvider } from "./PostContext";
+import { PostProvider } from "./contexts/PostContext";
+import { SearchProvider } from "./contexts/SearchContext";
 import { Archive, Footer, Header, Main, ThemeToggleBtn } from "./components";
 
 export default function App() {
@@ -6,12 +7,14 @@ export default function App() {
     <section>
       <ThemeToggleBtn />
 
-      <PostProvider>
-        <Header />
-        <Main />
-        <Archive />
-        <Footer />
-      </PostProvider>
+      <SearchProvider>
+        <PostProvider>
+          <Header />
+          <Main />
+          <Archive />
+          <Footer />
+        </PostProvider>
+      </SearchProvider>
     </section>
   );
 }

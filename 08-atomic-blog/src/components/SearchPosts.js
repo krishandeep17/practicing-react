@@ -1,8 +1,8 @@
-import { usePosts } from "../PostContext";
+import { useSearchContext } from "../contexts/SearchContext";
 
 export default function SearchPosts() {
   // 3) CONSUMING CONTEXT VALUE
-  const { searchQuery, setSearchQuery } = usePosts();
+  const { searchQuery, setSearchQuery } = useSearchContext();
 
   return (
     <input

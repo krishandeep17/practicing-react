@@ -1,25 +1,19 @@
-import { usePosts } from "../PostContext";
-
-function List() {
-  // 3) CONSUMING CONTEXT VALUE
-  const { posts } = usePosts();
-
-  return (
-    <ul>
-      {posts.map((post, i) => (
-        <li key={i}>
-          <h3>{post.title}</h3>
-          <p>{post.body}</p>
-        </li>
-      ))}
-    </ul>
-  );
-}
+import { usePostContext } from "../contexts/PostContext";
 
 export default function Posts() {
+  // 3) CONSUMING CONTEXT VALUE
+  const { posts } = usePostContext();
+
   return (
     <section>
-      <List />
+      <ul>
+        {posts.map((post, i) => (
+          <li key={i}>
+            <h3>{post.title}</h3>
+            <p>{post.body}</p>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
