@@ -21,6 +21,9 @@
   - [useRef](#useref)
   - [Custom Hooks](#custom-hooks)
 - [Context API](#context-api)
+  - [Advanced Pattern](#advanced-pattern-a-custom-provider-and-hook)
+- [State Placement Options](#state-placement-options)
+- [State Management Tool Options](#state-management-tool-options)
 
 ## JSX
 
@@ -32,7 +35,7 @@ Almost all React code is written in JSX. JSX is a syntax extension of Javascript
 
 React elements look just like HTML, in fact they render the same equivalent HTML elements.
 
-```javascript
+```html
 <h1>My Header</h1>
 <button>My Button</button>
 <ul>
@@ -44,16 +47,15 @@ React elements look just like HTML, in fact they render the same equivalent HTML
 
 Single tag elements like the `img` element and the `br` element must be closed like so
 
-```javascript
-<img src="my-image-source.jpeg" />
-<br />
+```html
+<img src="my-image-source.jpeg" /> <br />
 ```
 
 ### React Element Attributes
 
 React elements have different attributes compares to their HTML counterparts. Since JSX is still javascript, we use camelCase. Also, `class` is a protected keyword in javascript (creating classes) so the HTML `class` attribute in JSX is `className`.
 
-```javascript
+```html
 <div className="my-container">
   <img className="my-container-image" src="my-image.jpeg" />
 </div>
@@ -63,7 +65,7 @@ React elements have different attributes compares to their HTML counterparts. Si
 
 The power of JSX is that it’s javascript and HTML. This means you can write javascript to render different attributes directly in your javascript using curly braces `{}`.
 
-```javascript
+```js
 const divClass = "my-div-class"
 
 <div className={divClass}></div>
@@ -75,13 +77,13 @@ React elements just like HTML elements can use the `style` attribute, but you pa
 
 #### In HTML
 
-```javascript
+```html
 <h1 style="color: blue; text-align: center">This is a header</h1>
 ```
 
 #### In JSX
 
-```javascript
+```js
 <h1 style={{ color: "blue", textAlign: "center" }}>This is a header</h1>
 ```
 
@@ -89,7 +91,7 @@ React elements just like HTML elements can use the `style` attribute, but you pa
 
 React has a special element called a fragment. It’s a special element that doesn’t actually render into the DOM, but can act as a parent to a group of elements.
 
-```javascript
+```js
 import { Fragment } from "react";
 
 <Fragment>
@@ -100,7 +102,7 @@ import { Fragment } from "react";
 
 If you don’t want to import `Fragment` from the React library, you can also use `<>`.
 
-```javascript
+```js
 <>
   <h1>My H1</h1>
   <p>My Paragraph</p>
@@ -120,7 +122,7 @@ Components are the building blocks of your web application. We use them to organ
 
 Functional components are just javascript functions that return JSX. Here's how you create a functional component using function declaration:
 
-```javascript
+```js
 function MyComponent() {
   return <h1>My Component</h1>;
 }
@@ -128,7 +130,7 @@ function MyComponent() {
 
 You can also use an arrow function:
 
-```javascript
+```js
 const MyComponent = () => {
   return <h1>My Component</h1>;
 };
@@ -136,7 +138,7 @@ const MyComponent = () => {
 
 The component can then be used like any React element.
 
-```javascript
+```js
 const MyComponent = () => {
   return <h1>My Component</h1>;
 };
@@ -155,7 +157,7 @@ const MyOtherComponent = () => {
 
 We can pass data to our components through custom attributes on the component element. We can choose any name for the attribute as long they don’t overlap with the existing general element attributes (i.e. `className` , `styles` , `onClick` etc.). These properties are then grouped into an object where the attribute name is the key, and the value is the value. Here we are passing a prop `title` from the App component to our component `MyComponent` .
 
-```javascript
+```js
 const MyComponent = (props) => {
   return <h1>{props.title}</h1>;
 };
@@ -172,7 +174,7 @@ Remember, you can embed any of the values in your props object in JSX since it�
 Since the props are just an object, it’s common to destructure the values for cleaner,
 simpler code.
 
-```javascript
+```js
 const MyComponent = ({ title }) => {
   return <h1>{title}</h1>;
 };
@@ -190,7 +192,7 @@ and components!
 All component have a special prop called `children`. Any data (usually components and react elements) sitting between the opening and closing tags of the component get
 passed in as `children`.
 
-```javascript
+```js
 const Greeting = ({ children }) => {
   return children; // <h1>Hello World!</h1>
 };
@@ -206,14 +208,16 @@ const App = () => {
 
 We can render it anywhere in our component’s JSX! Just remember that it’s a javascript variable so make sure it’s wrapped in curly braces `{}`.
 
-```javascript
+```js
 const GreetingCard = ({ children }) => {
   return (
     <div>
       <h1>Greetings!</h1>
       {children}
-      // <p>Example Children Paragraph</p>
-      // <button>Example Children Button</button>
+      {/* 
+        <p>Example Children Paragraph</p> 
+        <button>Example Children Button</button>
+      */}
     </div>
   );
 };
@@ -232,7 +236,7 @@ const App = () => {
 
 Since our components are written in JSX which is just javascript, we can conditionally render different things with javascript. A basic example is to use an `if` statement in our functional component.
 
-```javascript
+```js
 const Greeting = ({ large }) => {
   if (large) {
     return <h1>Hello World!</h1>;
@@ -252,7 +256,7 @@ const App = () => {
 
 We can also use a ternary operator!
 
-```javascript
+```js
 const Greeting = ({ large }) => {
   return large ? <h1>Hello World!</h1> : <p>Hello World!</p>;
 };
@@ -260,8 +264,8 @@ const Greeting = ({ large }) => {
 const App = () => {
   return (
     <div>
-      <Greeting large={true} /> // <h1>Hello World!</h1>
-      <Greeting large={false} /> // <p>Hello World!</p>
+      <Greeting large={true} /> {/* <h1>Hello World!</h1> */}
+      <Greeting large={false} /> {/* <p>Hello World!</p> */}
     </div>
   );
 };
@@ -269,7 +273,7 @@ const App = () => {
 
 In a component, if we return null nothing will render to the DOM.
 
-```javascript
+```js
 const Greeting = ({ display, message }) => {
   return display ? <h1>{message}</h1> : null;
 };
@@ -291,7 +295,7 @@ If we want to duplicate elements/components, we can do so by looping through an 
 Remember, this is javascript so wrap your `map` call in `{}`. We must remember to add the attribute `key` to the top level JSX element we return from `map`, the value must also be a
 unique value for each iteration.
 
-```javascript
+```js
 const ShoppingList = ({ items }) => {
   return (
     <ul>
@@ -314,7 +318,7 @@ const App = () => {
 
 The reason is because React uses the key to determine which components to re-render, with the keys themselves being unique identifiers hence why the values need to be unique. Indexes are just numbers and in lists where there are multiple maps, if you always use the index as the key React may get confused.
 
-```javascript
+```js
 const ShoppingList = () => {
   const vegetables = ["broccoli", "carrots", "garlic"];
   const meats = ["chicken", "beef"];
@@ -338,7 +342,7 @@ This is why we need to use unique keys !
 
 Below we can fix this using the name attribute, which we know are unique.
 
-```javascript
+```js
 const ShoppingList = () => {
   const vegetables = ["broccoli", "carrots", "garlic"];
   const meats = ["chicken", "beef"];
@@ -377,7 +381,7 @@ As mentioned above, components re-render in the updating phase (2) due to prop c
 
 `useState` is a function that we can pass an optional argument representing the initial value we want to store. The `useState` hook returns back an array containing two values, the first is the current state value, the second is a setter function to update this state value.
 
-```javascript
+```js
 import { useState } from "react";
 
 const MyComponent = () => {
@@ -389,7 +393,7 @@ The `setValue` function we de-structured is called the _setter_ function. When w
 
 Let’s look at a basic counter example
 
-```javascript
+```js
 import { useState } from "react";
 
 const Counter = () => {
@@ -422,7 +426,7 @@ state.
 1. The first argument is a callback function called the _effect function_ that contains the side effect code we want to run.
 2. The second argument is an array called the _dependency array_ which contains values from outside the scope of the effect function. Whenever one of these values changes, `useEffect` will run the effect function.
 
-```javascript
+```js
 import { useEffect } from "react";
 
 const MyComponent = () => {
@@ -518,7 +522,7 @@ const UserList = ({ sourceURL }) => {
 
 As well as other state variables:
 
-```javascript
+```js
 import { useState, useEffect } from "react";
 
 import User from "../components/user";
@@ -767,3 +771,21 @@ export default function User() {
   );
 }
 ```
+
+## State Placement Options
+
+| 🤔 **Where to place state?** | **Tools** 👇🏻                          | **When to use?** 👇🏻                |
+| ---------------------------- | ------------------------------------- | ---------------------------------- |
+| 🏠 Local Component           | useState, useReducer or useRef        | Local State                        |
+| 🧑🏻‍👩🏻‍👦🏻 Parent Component    | useState, useReducer or useRef        | Lifting Up State                   |
+| 🌐 Context                   | Context API + useState or useReducer  | Global State (preferably UI State) |
+| 🗃️ 3rd Party Library         | Redux, React Query, SWR, Zustand etc. | Global State (remote or UI)        |
+| 🔗 URL                       | React Router                          | Global State passing between pages |
+| 💻 Browser                   | Local storage, session storage, etc.  | Storing data in user's browser     |
+
+## State Management Tool Options
+
+|                  | **LOCAL STATE**                                              | **GLOBAL STATE**                                                                                                                           |
+| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **UI STATE**     | <ul><li>useState</li><li>useReducer</li><li>useRef</li></ul> | <ul><li>Context API + useState/useReducer</li><li>Redux, Zustand, Recoil, etc.</li><li>React Router</li></ul>                              |
+| **REMOTE STATE** | <ul><li>fetch + useEffect + useState/useReducer</li></ul>    | <ul><li>Context API + useState/useReducer</li><li>Redux, Zustand, Recoil, etc.</li><li>React Query</li><li>SWR</li><li>RTK Query</li></ul> |
