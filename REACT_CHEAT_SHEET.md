@@ -20,6 +20,7 @@
   - [useEffect](#useeffect)
   - [useRef](#useref)
   - [Custom Hooks](#custom-hooks)
+- [Context API](#context-api)
 
 ## JSX
 
@@ -412,7 +413,7 @@ Whenever `setCount` is called, the `Counter` component will re-render, which is 
 It’s important to note that the setter function from `useState` is asynchronous. This means that if you try to log the state immediately after setting it, you might not see the updated
 state.
 
-## useEffect
+### useEffect
 
 **`useEffect` is a hook that allows us to create side effects in our functional components.**
 
@@ -583,7 +584,7 @@ export default CleanupFunction;
 
 It’s important to note, the _effect function_ runs _after_ React renders/re-renders the component to ensure our effect callback does not block browser painting.
 
-## useRef
+### useRef
 
 **`useRef` is a hook that stores a value in a component like `useState` except changes to that value won’t cause the component to re-render.**
 
@@ -648,7 +649,7 @@ function InputFocus() {
 
 When the `InputFocus` component mounts, we will call on the DOM node for the input and automatically focus it.
 
-## Custom Hooks
+### Custom Hooks
 
 - Allow us to reuse **non-visual logic** in multiple components
 - One custom hook should have **one purpose**, to make it **reusable** and **portable** (even across multiple projects)
@@ -674,4 +675,95 @@ const useLocalStorage = (initialState, key) => {
 };
 
 export default useLocalStorage;
+```
+
+## Context API
+
+- System to pass data throughout the app **without manually passing props** down the tree
+- Allow us to **"broadcast global state"** to the entire app
+
+1. **Provider:** gives all child components access to the value
+2. **value:** data that we want to make available (usually state and functions)
+3. **Consumers:** all components that read the provided context value
+
+### Advanced Pattern: A Custom Provider and Hook
+
+It is composed of two parts basically. First, the `Provider` and then our own `Custom Hook` to read the value out of the context.
+
+This is basically like a recipe that you can always follow in all your own projects when you want to use Context API
+
+> To use the following recipe, simply replace `Global` with your own `Context` name
+
+```js
+// GlobalContext.jsx
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState } from "react";
+
+// CREATE A CONTEXT
+const GlobalContext = createContext();
+
+export function GlobalProvider({ children }) {
+  const [name, setName] = useState("krishandeep");
+
+  // PROVIDE VALUE TO THE CHILD COMPONENTS
+  return (
+    <GlobalContext.Provider value={{ name, setName }}>
+      {children}
+    </GlobalContext.Provider>
+  );
+}
+
+// CUSTOM HOOK
+export function useGlobalContext() {
+  const context = useContext(GlobalContext);
+
+  if (context === undefined)
+    throw new Error("GlobalContext was used outside of the GlobalProvider");
+
+  return context;
+}
+```
+
+Wrap your `App` component inside `GlobalProvider` so that you can consume context value in your entire application.
+
+> Usually, we create one `context` per state domain like `PostContext` or `SearchContext`
+
+```js
+// main.jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { GlobalProvider } from "./contexts/GlobalContext.js"; // 👈🏻
+
+import App from "./App.jsx";
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <GlobalProvider>
+      <App />
+    </GlobalProvider>
+  </React.StrictMode>
+);
+```
+
+Consuming context value
+
+```js
+// User.jsx
+import { useGlobalContext } from "../contexts/GlobalContext";
+
+export default function User() {
+  const { name, setName } = useGlobalContext();
+
+  return (
+    <div>
+      <h2>{name}</h2>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+    </div>
+  );
+}
 ```
