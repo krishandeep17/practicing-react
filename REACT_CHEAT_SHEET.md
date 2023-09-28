@@ -20,6 +20,7 @@
   - [useEffect](#useeffect)
   - [useRef](#useref)
   - [Custom Hooks](#custom-hooks)
+  - [useReducer](#usereducer)
 - [Context API](#context-api)
   - [Advanced Pattern](#advanced-pattern-a-custom-provider-and-hook)
 - [State Placement Options](#state-placement-options)
@@ -679,6 +680,89 @@ const useLocalStorage = (initialState, key) => {
 };
 
 export default useLocalStorage;
+```
+
+### useReducer
+
+State management with `useState` is not enough in certain situations:
+
+1. When components have **a lot of state variables and state updates**, spread across many event handlers **all over the component**
+2. When **multiple state updates** need to happen **at the same time** (as a reaction to the same event, like "starting a game")
+3. When updating one piece of state **depends on one or multiple other pieces of state**
+
+In all these situations, `useReducer` can be of great help
+
+#### Managing State with `useReducer`
+
+- An alternative way of setting state, ideal for **complex state** and **related piece of state**
+- Stores related pieces of state in `state` object
+- useReducer needs `reducer`: function containing **all logic to update state. Decouples state logic from component**
+- `reducer`: pure function (**_no side effects!_**) that takes current state and action, **and returns the next state**
+- `action`: object and describes **how to update state**
+- `dispatch`: function to trigger state updates, by **"sending" actions** from event handlers to the **reducer**
+
+```js
+import { useEffect, useReducer } from "react";
+
+const initialState = {
+  cities: [],
+  error: "",
+  isLoading: false,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "loading": {
+      return { ...state, isLoading: true };
+    }
+
+    case "cities/loaded": {
+      return { ...state, cities: action.payload, isLoading: false };
+    }
+
+    case "rejected": {
+      return { ...state, error: action.payload };
+    }
+
+    default:
+      throw new Error(`Unknown action ${action.type}`);
+  }
+}
+
+export default function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const { cities, error, isLoading } = state;
+
+  useEffect(() => {
+    async function getCities() {
+      dispatch({ type: "loading" });
+      try {
+        const res = await fetch(import.meta.env.VITE_SERVER);
+        const data = await res.json();
+
+        dispatch({ type: "cities/loaded", payload: data });
+      } catch (error) {
+        dispatch({
+          type: "rejected",
+          payload: "There was an error in loading the cities...",
+        });
+      }
+    }
+
+    getCities();
+  }, []);
+
+  if (isLoading) return <Loader />;
+
+  if (error) return <Error message={error} />;
+
+  return (
+    <div>
+      <Cities cities={cities} />
+    </div>
+  );
+}
 ```
 
 ## Context API
