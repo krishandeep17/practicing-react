@@ -1,4 +1,5 @@
 import Archive from "./Archive";
+import ClearButton from "./ClearButton";
 import Footer from "./Footer";
 import FormAddPost from "./FormAddPost";
 import Header from "./Header";
@@ -10,6 +11,7 @@ import ThemeToggleBtn from "./ThemeToggleBtn";
 
 export {
   Archive,
+  ClearButton,
   Footer,
   FormAddPost,
   Header,

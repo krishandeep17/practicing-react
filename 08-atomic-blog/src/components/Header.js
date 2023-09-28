@@ -1,10 +1,6 @@
-import { usePostContext } from "../contexts/PostContext";
-import { Results, SearchPosts } from "../components";
+import { ClearButton, Results, SearchPosts } from "../components";
 
 export default function Header() {
-  // 3) CONSUMING CONTEXT VALUE
-  const { handleClearPosts } = usePostContext();
-
   return (
     <header>
       <h1>
@@ -13,7 +9,7 @@ export default function Header() {
       <div>
         <Results />
         <SearchPosts />
-        <button onClick={handleClearPosts}>Clear posts</button>
+        <ClearButton />
       </div>
     </header>
   );

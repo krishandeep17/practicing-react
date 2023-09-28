@@ -873,3 +873,158 @@ export default function User() {
 | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **UI STATE**     | <ul><li>useState</li><li>useReducer</li><li>useRef</li></ul> | <ul><li>Context API + useState/useReducer</li><li>Redux, Zustand, Recoil, etc.</li><li>React Router</li></ul>                              |
 | **REMOTE STATE** | <ul><li>fetch + useEffect + useState/useReducer</li></ul>    | <ul><li>Context API + useState/useReducer</li><li>Redux, Zustand, Recoil, etc.</li><li>React Query</li><li>SWR</li><li>RTK Query</li></ul> |
+
+## Performance Optimization
+
+A component instance only gets re-rendered in 3 different situations:
+
+- **STATE CHANGES**
+- **CONTEXT CHANGES**
+- **PARENT RE-RENDERS** (creates the false impression that **changing props** re-renders a component. This is **NOT** true)
+
+### Wasted Render
+
+- A render that didn't produce any change in the DOM, usually no problem, as React is very fast!
+- Only a problem when they happen **too frequently** or when the **component is very slow**
+
+> **Prevent Wasted Render**: The problem is that whenever `count` changes inside `Test`, we will re-render `<SlowComponent />` even though this actually is not really dependent on the state.
+
+Two different solutions for this:
+
+1. [Move State Down](#move-state-down)
+2. [Lift Content Up](#lift-content-up)
+
+#### Move State Down
+
+If you look at the rendering code closer, you’ll notice only a part of the returned tree actually cares about the current `count`:
+
+```js
+export default function Test() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h1>Slow counter?!?</h1>
+      <button onClick={() => setCount((c) => c + 1)}>Increase: {count}</button>
+
+      <SlowComponent />
+    </div>
+  );
+}
+```
+
+So let’s extract that part into a `<Counter />` component and move state down into it:
+
+```js
+export default function Test() {
+  return (
+    <div>
+      <h1>Slow counter?!?</h1>
+      <Counter />
+      <SlowComponent />
+    </div>
+  );
+}
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount((c) => c + 1)}>Increase: {count}</button>
+  );
+}
+```
+
+Now if the `count` changes, only the `<Counter />` re-renders. Problem solved.
+
+#### Lift Content Up
+
+```js
+export default function Test() {
+  return (
+    <div>
+      <h1>Slow counter?!?</h1>
+      <Counter>
+        <SlowComponent />
+      </Counter>
+    </div>
+  );
+}
+
+function Counter({ children }) {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <button onClick={() => setCount((c) => c + 1)}>Increase: {count}</button>
+
+      {children}
+    </div>
+  );
+}
+```
+
+The parts that don't care about the `count` stayed in the `<Test />` component and are passed to `<Counter />` as the children prop.
+
+When the `count` changes, `<Counter />` re-renders. But it still has the same children prop it got from the `<Test />` last time, so React doesn’t visit that subtree.
+
+And as a result, `<SlowComponent />` doesn’t re-render.
+
+### Memoization
+
+Optimization technique that executes a pure function once, and saves the result in memory. If we try to execute the function again with the **same arguments as before**, the previously saved result will be returned, **without executing the function again**.
+
+1. Prevent wasted renders
+2. Improve app speed and responsiveness
+
+- Memoize **components** with `memo`
+- Memoize **objects** with `useMemo`
+- Memoize **functions** with `useCallback`
+
+### Memo
+
+- Used to create a component that will **not re-render when its parent re-renders**, as long as the **props stay the same between renders**
+- **Only affects props**! A memoized component will still re-render when its **own state changes** or when a **context that it's subscribed to changes**
+- Only makes sense when the component is **heavy** (slow rendering), **re-renders often**, and does so **with the same props**
+
+```js
+import { memo } from "react";
+
+const SomeComponent = memo(function SomeComponent(props) {
+  // ...
+});
+```
+
+> **Remember :** If we memoized a component but then give it objects or functions as props, the component will always re-render, because it'll always see these props as new props, even when they actually look exactly the same.
+
+### useMemo and useCallback
+
+- Used to memoize values (`useMemo`) and functions (`useCallback`) **between renders**
+- Values passed into `useMemo` and `useCallback` will be stored in memory ("cached") and **returned in subsequent re-renders, as long as dependencies** ("_inputs_") **stay the same**
+- `useMemo` and `useCallback` have a **dependency array** (like `useEffect`): whenever one **dependency changes**, the value will be **re-created**
+
+```js
+import { useMemo } from "react";
+
+export default function Posts({ posts }) {
+  const archiveOptions = useMemo(() => {
+    // `useMemo` memoize the value that we're getting back from the function
+    return {
+      show: false,
+      title: `Post archive in addition to ${posts.length} main posts`,
+    };
+  }, [posts.length]);
+  // ...
+}
+```
+
+```js
+import { useCallback } from "react";
+
+export default function Posts({ posts }) {
+  // `useCallback` memoize the function
+  const handleAddPost = useCallback((post) => {
+    setPosts((posts) => [post, ...posts]);
+  }, []);
+  // ...
+}
+```
