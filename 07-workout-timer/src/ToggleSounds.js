@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 function ToggleSounds({ allowSound, setAllowSound }) {
   return (
     <button
@@ -9,4 +11,5 @@ function ToggleSounds({ allowSound, setAllowSound }) {
   );
 }
 
-export default ToggleSounds;
+// Memoize the <ToggleSounds /> so that it'll not re-render when its parent(<App />) re-render
+export default memo(ToggleSounds);
