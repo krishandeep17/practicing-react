@@ -1,17 +1,21 @@
-import { legacy_createStore as createStore } from "redux";
+import { legacy_createStore as createStore, combineReducers } from "redux";
 
-const initialState = {
+// Back in the day, react developers used to place these strings into separate variables
+// const ACCOUNT_DEPOSIT = "account/deposit";
+
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
 };
 
-// Back in the day, react developers used to place these strings into separate variables
-// const ACCOUNT_DEPOSIT = "account/deposit";
+const initialStateCustomer = {
+  fullName: "",
+  nationalId: "",
+  createdAt: "",
+};
 
-const store = createStore(reducer);
-
-function reducer(state = initialState, action) {
+function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     case "account/deposit": {
       return { ...state, balance: state.balance + action.payload };
@@ -46,6 +50,34 @@ function reducer(state = initialState, action) {
   }
 }
 
+function customerReducer(state = initialStateCustomer, action) {
+  switch (action.type) {
+    case "customer/createCustomer": {
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalId: action.payload.nationalId,
+        createdAt: action.payload.createdAt,
+      };
+    }
+
+    case "customer/updateName": {
+      return { ...state, fullName: action.payload };
+    }
+
+    default:
+      return state;
+  }
+}
+
+// Turns an object whose values are different reducer functions, into a single reducer function.
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+
+const store = createStore(rootReducer);
+
 // ACTION CREATOR FUNCTIONS
 function deposit(amount) {
   return { type: "account/deposit", payload: amount };
@@ -74,4 +106,21 @@ store.dispatch(requestLoan(1000, "Buy a car"));
 console.log(store.getState());
 
 store.dispatch(payLoan());
+console.log(store.getState());
+
+function createCustomer(fullName, nationalId) {
+  return {
+    type: "customer/createCustomer",
+    payload: { fullName, nationalId, createdAt: new Date().toISOString() },
+  };
+}
+
+function updateName(fullName) {
+  return { type: "customer/updateName", payload: fullName };
+}
+
+store.dispatch(createCustomer("Krishan", "123"));
+console.log(store.getState());
+
+store.dispatch(updateName("Krishandeep"));
 console.log(store.getState());
