@@ -23,9 +23,12 @@ function AccountOperations() {
   function handleDeposit() {
     if (!depositAmount) return;
 
-    dispatch(deposit(depositAmount));
+    // when we `dispatch` here and then call the `deposit` action creator instead of ending up with the event object, we'll end up a function
+    // when a function dispatch, `Redux` know that, that function is the `thunk`
+    dispatch(deposit(depositAmount, currency));
 
     setDepositAmount("");
+    setCurrency("INR");
   }
 
   function handleWithdrawal() {
@@ -73,7 +76,9 @@ function AccountOperations() {
             <option value="GBP">British Pound</option>
           </select>
 
-          <button onClick={handleDeposit}>Deposit {depositAmount}</button>
+          <button disabled={account.isLoading} onClick={handleDeposit}>
+            {account.isLoading ? "Converting" : `Deposit ${depositAmount}`}
+          </button>
         </div>
 
         <div>
