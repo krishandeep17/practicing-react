@@ -1,55 +1,54 @@
-const initialStateAccount = {
+// ------------------------------------------------- //
+// ---------- USING MODERN REDUX TOOLKIT ---------- //
+// ------------------------------------------------- //
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
   isLoading: false,
 };
 
-// REDUCER
-export default function accountReducer(state = initialStateAccount, action) {
-  switch (action.type) {
-    case "account/deposit": {
-      return {
-        ...state,
-        balance: state.balance + action.payload,
-        isLoading: false,
-      };
-    }
+const accountSlice = createSlice({
+  name: "account",
+  initialState,
+  reducers: {
+    deposit(state, action) {
+      state.balance += action.payload;
+      state.isLoading = false;
+    },
+    convertingCurrency(state) {
+      state.isLoading = true;
+    },
+    withdraw(state, action) {
+      state.balance -= action.payload;
+    },
 
-    case "account/convertingCurrency": {
-      return { ...state, isLoading: true };
-    }
+    // If you need to customize the creation of the payload value of an action creator by means of a `prepare callback`, the value of the appropriate field of the `reducers` argument object should be an object instead of a function. This object must contain two properties: `reducer` and `prepare`. The value of the `reducer` field should be the case reducer function while the value of the `prepare` field should be the prepare callback function:
 
-    case "account/withdraw": {
-      return { ...state, balance: state.balance - action.payload };
-    }
+    requestLoan: {
+      prepare(amount, purpose) {
+        return { payload: { amount, purpose } };
+      },
 
-    case "account/requestLoan": {
-      if (state.loan > 0) return state;
-      return {
-        ...state,
-        balance: state.balance + action.payload.amount,
-        loan: action.payload.amount,
-        loanPurpose: action.payload.purpose,
-      };
-    }
+      reducer(state, action) {
+        if (state.loan > 0) return;
 
-    case "account/payLoan": {
-      return {
-        ...state,
-        balance: state.balance - state.loan,
-        loan: 0,
-        loanPurpose: "",
-      };
-    }
+        state.balance += action.payload.amount;
+        state.loan = action.payload.amount;
+        state.loanPurpose = action.payload.purpose;
+      },
+    },
+    payLoan(state) {
+      state.balance -= state.loan;
+      state.loan = 0;
+      state.loanPurpose = "";
+    },
+  },
+});
 
-    default: {
-      return state;
-    }
-  }
-}
-
-// ACTION CREATOR FUNCTIONS
 export function deposit(amount, currency) {
   if (currency === "INR") {
     return { type: "account/deposit", payload: amount };
@@ -73,17 +72,6 @@ export function deposit(amount, currency) {
   };
 }
 
-export function withdraw(amount) {
-  return { type: "account/withdraw", payload: amount };
-}
+export const { payLoan, requestLoan, withdraw } = accountSlice.actions;
 
-export function requestLoan(amount, purpose) {
-  return {
-    type: "account/requestLoan",
-    payload: { amount, purpose },
-  };
-}
-
-export function payLoan() {
-  return { type: "account/payLoan" };
-}
+export default accountSlice.reducer;
