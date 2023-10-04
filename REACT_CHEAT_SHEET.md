@@ -2,9 +2,8 @@
 
 ## Table of Contents
 
-- [JSX](#jsx)
-
 - [React Elements](#react-elements)
+  - [JSX](#jsx)
   - [React Element Tags](#react-element-tags)
   - [React Element Attributes](#react-element-attributes)
   - [React Elements Embedded Javascript](#react-elements-embedded-javascript)
@@ -25,12 +24,23 @@
   - [Advanced Pattern](#advanced-pattern-a-custom-provider-and-hook)
 - [State Placement Options](#state-placement-options)
 - [State Management Tool Options](#state-management-tool-options)
+- [Performance Optimization](#performance-optimization)
+  - [Wasted Render](#wasted-render)
+    - [Move State Down](#move-state-down)
+    - [Lift Content Up](#lift-content-up)
+  - [Memoization](#memoization)
+  - [Memo](#memo)
+  - [useMemo and useCallback](#usememo-and-usecallback)
 
-## JSX
-
-Almost all React code is written in JSX. JSX is a syntax extension of Javascript that allows us to write HTML-like syntax in Javascript.
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
 
 ## React Elements
+
+### JSX
+
+Almost all React code is written in JSX. JSX is a syntax extension of Javascript that allows us to write HTML-like syntax in Javascript.
 
 ### React Element Tags
 
@@ -112,7 +122,11 @@ If you don’t want to import `Fragment` from the React library, you can also us
 
 Fragments are useful in components since components require us to return one parent level element, and if we don’t want to needlessly add HTML elements to our website, we can just use fragments.
 
-### React Components
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+## React Components
 
 Components are the building blocks of your web application. We use them to organize groups of React elements together so they’re reusable. There are two kinds of components, class components and functional components but functional components are the de facto standard today. They both follow the same two rules:
 
@@ -362,6 +376,10 @@ const ShoppingList = () => {
 };
 ```
 
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
 ## Hooks
 
 Hooks were introduced in React version 16.8 as a way to extend additional functionality into functional components. Previously this functionality was only available to class components, but through hooks we can super charge our functional components!
@@ -376,9 +394,9 @@ Hooks are normally called at the _top_ of our components.
 
 ### useState
 
-**`useState` hook allows us to store values scoped to a component. Any changes to those values will cause the component and any of it’s child components to rerender.**
+**`useState` hook allows us to store values scoped to a component. Any changes to those values will cause the component and any of it’s child components to re-render.**
 
-As mentioned above, components re-render in the updating phase (2) due to prop changes and state changes. State is data stored inside of a component that can be updated/changed. When this state data changes, this will trigger a re-render of the component. While we can store and change data in a variable, those changes will not trigger a re-render. With the `useState` hook, it does allow us to trigger re-renders on changes to that data.
+As mentioned above, components re-render in the updating phase due to prop changes and state changes. State is data stored inside of a component that can be updated/changed. When this state data changes, this will trigger a re-render of the component. While we can store and change data in a variable, those changes will not trigger a re-render. With the `useState` hook, it does allow us to trigger re-renders on changes to that data.
 
 `useState` is a function that we can pass an optional argument representing the initial value we want to store. The `useState` hook returns back an array containing two values, the first is the current state value, the second is a setter function to update this state value.
 
@@ -765,6 +783,10 @@ export default function App() {
 }
 ```
 
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
 ## Context API
 
 - System to pass data throughout the app **without manually passing props** down the tree
@@ -867,6 +889,10 @@ export default function User() {
 | 🔗 URL                       | React Router                          | Global State passing between pages |
 | 💻 Browser                   | Local storage, session storage, etc.  | Storing data in user's browser     |
 
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
 ## State Management Tool Options
 
 |                  | **LOCAL STATE**                                              | **GLOBAL STATE**                                                                                                                           |
@@ -874,13 +900,17 @@ export default function User() {
 | **UI STATE**     | <ul><li>useState</li><li>useReducer</li><li>useRef</li></ul> | <ul><li>Context API + useState/useReducer</li><li>Redux, Zustand, Recoil, etc.</li><li>React Router</li></ul>                              |
 | **REMOTE STATE** | <ul><li>fetch + useEffect + useState/useReducer</li></ul>    | <ul><li>Context API + useState/useReducer</li><li>Redux, Zustand, Recoil, etc.</li><li>React Query</li><li>SWR</li><li>RTK Query</li></ul> |
 
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
 ## Performance Optimization
 
 A component instance only gets re-rendered in 3 different situations:
 
-- **STATE CHANGES**
-- **CONTEXT CHANGES**
-- **PARENT RE-RENDERS** (creates the false impression that **changing props** re-renders a component. This is **NOT** true)
+1. **STATE CHANGES**
+2. **CONTEXT CHANGES**
+3. **PARENT RE-RENDERS** (creates the false impression that **changing props** re-renders a component. This is **NOT** true)
 
 ### Wasted Render
 
@@ -994,7 +1024,18 @@ const SomeComponent = memo(function SomeComponent(props) {
 });
 ```
 
-> **Remember :** If we memoized a component but then give it objects or functions as props, the component will always re-render, because it'll always see these props as new props, even when they actually look exactly the same.
+#### An Issue with Memo
+
+| In React, everything is **re-created on every render** (including objects and functions)                                     |
+| ---------------------------------------------------------------------------------------------------------------------------- |
+| <div align="center">👇🏻</div>                                                                                                 |
+| In JavaScript, two objects or functions that look the same, **are actually different** ({} != {})                            |
+| <div align="center">THEREFORE 👇🏻</div>                                                                                       |
+| If objects or functions are passed as props, the child component will always see them as **new props on each re-render**     |
+| <div align="center">👇🏻</div>                                                                                                 |
+| **If props are different between re-renders, memo will not work**                                                            |
+| <div align="center">SOLUTION 👇🏻</div>                                                                                        |
+| **We need to memoize objects and functions, to make them stable (preserve) between re-renders (memoized {} == memoized {})** |
 
 ### useMemo and useCallback
 
@@ -1028,3 +1069,7 @@ export default function Posts({ posts }) {
   // ...
 }
 ```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
