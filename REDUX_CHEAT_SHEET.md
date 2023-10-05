@@ -8,6 +8,11 @@
   - [Redux Middleware](#redux-middleware)
   - [Redux Thunks](#redux-thunks)
 - [Redux Toolkit (RTK)](#redux-toolkit-rtk)
+  - [Create a Redux Store](#create-a-redux-store)
+  - [Provide the Redux Store to React](#provide-the-redux-store-to-react)
+  - [Create a Redux State Slice](#create-a-redux-state-slice)
+  - [Add Slice Reducers to the Store](#add-slice-reducers-to-the-store)
+  - [Use Redux State and Actions in React Components](#use-redux-state-and-actions-in-react-components)
 - [Context API VS. Redux](#context-api-vs-redux)
 
 <div align="right">
@@ -262,105 +267,155 @@ export function deposit(amount, currency) {
   2. Action creators are **automatically** created
   3. **Automatic** setup of thunk middleware and DevTools
 
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Install Redux Toolkit and React-Redux
+
 ```
-npm install @reduxjs/toolkit
+npm install @reduxjs/toolkit react-redux
 ```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Create a Redux Store
+
+**`configureStore()`**: wraps `createStore` to provide simplified configuration options and good defaults. It can automatically combine your slice reducers, adds whatever Redux middleware you supply, includes `redux-thunk` by default, and enables use of the Redux DevTools Extension.
 
 ```js
-// stores.js
+// store.js
 import { configureStore } from "@reduxjs/toolkit";
 
-import accountReducer from "./features/accounts/accountSlice";
-import customerReducer from "./features/customers/customerSlice";
-
 const store = configureStore({
-  reducer: {
-    account: accountReducer,
-    customer: customerReducer,
-  },
+  reducer: {},
 });
-
-// configureStore(): wraps `createStore` to provide simplified configuration options and good defaults. It can automatically combine your slice reducers, adds whatever Redux middleware you supply, includes `redux-thunk` by default, and enables use of the Redux DevTools Extension.
 
 export default store;
 ```
 
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Provide the Redux Store to React
+
 ```js
-// src/features/accounts/accountSlice.js
+// main.jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+
+import "./styles.css";
+import App from "./App.jsx";
+import store from "./store";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Create a Redux State Slice
+
+**`createSlice()`**: accepts an object of **reducer functions**, a **slice name**, and an **initial state value**, and automatically generates a slice reducer with corresponding action creators and action types.
+
+```js
+// src/features/counter/counterSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  balance: 0,
-  loan: 0,
-  loanPurpose: "",
-  isLoading: false,
+  value: 0,
 };
 
-// createSlice(): accepts an object of reducer functions, a slice name, and an initial state value, and automatically generates a slice reducer with corresponding `action creators` and `action types`.
-const accountSlice = createSlice({
-  name: "account",
+const counterSlice = createSlice({
+  name: "counter",
   initialState,
   reducers: {
-    deposit(state, action) {
-      state.balance += action.payload;
-      state.isLoading = false;
+    increment: (state) => {
+      // Redux Toolkit allows us to write "mutating" logic in reducers. It
+      // doesn't actually mutate the state because it uses the Immer library,
+      // which detects changes to a "draft state" and produces a brand new
+      // immutable state based off those changes
+      state.value += 1;
     },
-    convertingCurrency(state) {
-      state.isLoading = true;
+    decrement: (state) => {
+      state.value -= 1;
     },
-    withdraw(state, action) {
-      state.balance -= action.payload;
-    },
-
-    // If you need to customize the creation of the payload value of an action creator by means of a `prepare callback`, the value of the appropriate field of the `reducers` argument object should be an object instead of a function. This object must contain two properties: `reducer` and `prepare`. The value of the `reducer` field should be the case reducer function while the value of the `prepare` field should be the prepare callback function:
-
-    requestLoan: {
-      prepare(amount, purpose) {
-        return { payload: { amount, purpose } };
-      },
-
-      reducer(state, action) {
-        if (state.loan > 0) return;
-
-        state.balance += action.payload.amount;
-        state.loan = action.payload.amount;
-        state.loanPurpose = action.payload.purpose;
-      },
-    },
-    payLoan(state) {
-      state.balance -= state.loan;
-      state.loan = 0;
-      state.loanPurpose = "";
+    incrementByAmount: (state, action) => {
+      state.value += action.payload;
     },
   },
 });
 
-export function deposit(amount, currency) {
-  if (currency === "INR") {
-    return { type: "account/deposit", payload: amount };
+// Action creators are generated for each case reducer function
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+
+export default counterSlice.reducer;
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Add Slice Reducers to the Store
+
+```js
+// store.js
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "../features/counter/counterSlice";
+
+const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+  },
+});
+
+export default store;
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Use Redux State and Actions in React Components
+
+```js
+// src/features/counter/Counter.js
+import { useDispatch, useSelector } from "react-redux";
+import { decrement, increment } from "./counterSlice";
+
+export default function Counter() {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+
+  function handleDecrement() {
+    dispatch(decrement());
   }
 
-  // if we return a function here then `Redux` knows that this is asynchronous action that we want to execute before dispatching anything
-  return async function (dispatch, getState) {
-    // API call
-    dispatch({ type: "account/convertingCurrency" });
+  function handleIncrement() {
+    dispatch(increment());
+  }
 
-    const res = await fetch(
-      `https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=INR`
-    );
-
-    const data = await res.json();
-
-    const convertedAmount = data.rates.INR;
-
-    // return action
-    dispatch({ type: "account/deposit", payload: convertedAmount });
-  };
+  return (
+    <div>
+      <div>
+        <button onClick={handleDecrement}>-</button>
+        <span>{count}</span>
+        <button onClick={handleIncrement}>+</button>
+      </div>
+    </div>
+  );
 }
-
-export const { payLoan, requestLoan, withdraw } = accountSlice.actions;
-
-export default accountSlice.reducer;
 ```
 
 <div align="right">
@@ -377,6 +432,10 @@ export default accountSlice.reducer;
 | 👎🏻 **No** mechanism for async operations                                                             | 👍🏻 Supports **middleware** for async operations                   |
 | 👎🏻 Performance optimization is a **pain**                                                            | 👍🏻 Performance is optimized **out of the box**                    |
 | 👎🏻 Only React DevTools                                                                               | 👍🏻 Excellent DevTools                                             |
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
 
 ### When to use Context API or Redux?
 
