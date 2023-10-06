@@ -36,6 +36,7 @@
   - [request](#request)
   - [useActionData](#useactiondata)
   - [params](#params)
+  - [useFetcher](#usefetcher)
 
 ## React Router Basics
 
@@ -783,6 +784,41 @@ Route params are parsed from dynamic segments and passed to your action. This is
 ```js
 export async function orderLoader({ params }) {
   return await getOrder(params.orderId);
+}
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### useFetcher
+
+Fetch data not associated with UI routes
+
+Interacts with route loaders and actions without causing a navigation. Great for any interaction that stays on the same page.
+
+```js
+import { useFetcher } from "react-router-dom";
+
+export default function Order() {
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (!fetcher.data && fetcher.state === "idle") {
+      fetcher.load("/menu");
+    }
+  }, [fetcher]);
+
+  // build your UI with these properties
+  fetcher.state;
+  fetcher.formData;
+  fetcher.json;
+  fetcher.text;
+  fetcher.formMethod;
+  fetcher.formAction;
+  fetcher.data;
+
+  // ...
 }
 ```
 
