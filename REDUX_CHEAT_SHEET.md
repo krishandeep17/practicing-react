@@ -13,6 +13,7 @@
   - [Create a Redux State Slice](#create-a-redux-state-slice)
   - [Add Slice Reducers to the Store](#add-slice-reducers-to-the-store)
   - [Use Redux State and Actions in React Components](#use-redux-state-and-actions-in-react-components)
+  - [createAsyncThunk](#createasyncthunk)
 - [Context API VS. Redux](#context-api-vs-redux)
 
 <div align="right">
@@ -416,6 +417,63 @@ export default function Counter() {
     </div>
   );
 }
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### createAsyncThunk
+
+A function that accepts a Redux action type string and a callback function that should return a promise.
+
+Now, what's special about this is that, this `createAsyncThunk` will basically produce three additional action types. So one for the `pending` promise state, one for the `fulfilled` state and one for the `rejected` state.
+
+```js
+// userSlice.js
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+// First, create the thunk
+export const fetchAddress = createAsyncThunk("user/fetchAddress", async () => {
+  // code that we want to execute as soon as this action will be dispatched
+
+  return { position, address }; // Payload of the FULFILLED state
+});
+
+// Initial State
+const initialState = {
+  username: "",
+  status: "idle",
+  position: {},
+  address: "",
+  error: "",
+};
+
+// Then, handle actions in your reducers:
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    // standard reducer logic, with auto-generated action types per reducer
+  },
+  // `createAsyncThunk` will basically produce three additional action types:
+  // `pending`, `fulfilled`, and `rejected`
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAddress.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchAddress.fulfilled, (state, action) => {
+        state.position = action.payload.position;
+        state.address = action.payload.address;
+        state.status = "idle";
+      })
+      .addCase(fetchAddress.rejected, (state, action) => {
+        state.status = "error";
+        state.error = action.error.message;
+      });
+  },
+});
 ```
 
 <div align="right">
