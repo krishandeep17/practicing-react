@@ -818,7 +818,8 @@ export default function Order() {
   fetcher.formAction;
   fetcher.data;
 
-  // ...
+  // render a form that doesn't cause navigation
+  return <fetcher.Form />;
 }
 ```
 
