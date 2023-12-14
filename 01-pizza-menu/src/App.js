@@ -1,10 +1,52 @@
 import { pizzaData } from "./data";
 
+const App = () => {
+  return (
+    <div className="container">
+      <Header />
+      <Menu />
+      <Footer />
+    </div>
+  );
+};
+
 const Header = () => {
   return (
     <header className="header">
       <h1>Fast React Pizza Co.</h1>
     </header>
+  );
+};
+
+const Menu = () => {
+  return (
+    <main className="menu">
+      <h2>Our Menu</h2>
+      <p>
+        Authentic Italian cuisine. 6 creative dishes to choose from. All from
+        our stone oven, all organic, all delicious.
+      </p>
+      <ul className="pizzas">
+        {pizzaData.map((pizza) => (
+          <Pizza key={pizza.id} pizza={pizza} />
+        ))}
+      </ul>
+    </main>
+  );
+};
+
+const Pizza = ({ pizza }) => {
+  const { name, ingredients, price, image, soldOut } = pizza;
+
+  return (
+    <li className={soldOut ? "pizza sold-out" : "pizza"}>
+      <img src={image} alt={name} />
+      <div>
+        <h3>{name}</h3>
+        <p>{ingredients}</p>
+        <span>{soldOut ? "SOLD OUT" : `$${price}`}</span>
+      </div>
+    </li>
   );
 };
 
@@ -31,56 +73,6 @@ const Footer = () => {
         </p>
       )}
     </footer>
-  );
-};
-
-const Pizza = ({ name, ingredients, price, image, soldOut }) => {
-  return (
-    <li className={soldOut ? "pizza sold-out" : "pizza"}>
-      <img src={image} alt={name} />
-      <div>
-        <h3>{name}</h3>
-        <p>{ingredients}</p>
-        <span>{soldOut ? "SOLD OUT" : price}</span>
-      </div>
-    </li>
-  );
-};
-
-const Menu = () => {
-  return (
-    <main className="menu">
-      <h2>Our Menu</h2>
-      <p>
-        Authentic Italian cuisine. 6 creative dishes to choose from. All from
-        our stone oven, all organic, all delicious.
-      </p>
-      <ul className="pizzas">
-        {pizzaData.map((pizza) => {
-          const { id, name, ingredients, price, image, soldOut } = pizza;
-          return (
-            <Pizza
-              key={id}
-              name={name}
-              ingredients={ingredients}
-              price={price}
-              image={image}
-              soldOut={soldOut}
-            />
-          );
-        })}
-      </ul>
-    </main>
-  );
-};
-
-const App = () => {
-  return (
-    <div className="container">
-      <Header />
-      <Menu />
-      <Footer />
-    </div>
   );
 };
 
