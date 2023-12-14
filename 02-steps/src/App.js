@@ -6,9 +6,9 @@ const messages = [
   "Invest your new income 🤑",
 ];
 
-function Button({ disabled, onClick, children }) {
+function Button({ disabled, type, onClick, children }) {
   return (
-    <button disabled={disabled} onClick={onClick}>
+    <button disabled={disabled} className={type} onClick={onClick}>
       {children}
     </button>
   );
@@ -35,30 +35,34 @@ export default function App() {
 
   return (
     <>
-      <button
-        className="close"
+      <Button
+        type="close-btn"
         onClick={() => setIsOpen((prevIsOpen) => !prevIsOpen)}
       >
         {isOpen ? <span>&#215;</span> : <span>&#43;</span>}
-      </button>
+      </Button>
 
       {isOpen && (
         <div className="container">
           <ul className="steps">
-            {Array.from({ length: messages.length }, (_, i) => i + 1).map(
-              (num) => (
-                <li className={step >= num && "active"}>{num}</li>
-              )
-            )}
+            {messages.map((message, i) => (
+              <li key={message} className={step >= i + 1 ? "active" : null}>
+                {i + 1}
+              </li>
+            ))}
           </ul>
           <p className="message">
             Step {step}: {messages[step - 1]}
           </p>
           <div className="buttons">
-            <Button disabled={!hasPrev} onClick={handlePrevious}>
+            <Button
+              disabled={!hasPrev}
+              type="primary-btn"
+              onClick={handlePrevious}
+            >
               👈 Previous
             </Button>
-            <Button disabled={!hasNext} onClick={handleNext}>
+            <Button disabled={!hasNext} type="primary-btn" onClick={handleNext}>
               Next 👉
             </Button>
           </div>
