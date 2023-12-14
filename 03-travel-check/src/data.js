@@ -1,4 +1,4 @@
-const initialItems = [
+export const initialItems = [
   {
     id: 1,
     description: "Passports",
@@ -36,5 +36,3 @@ const initialItems = [
     packed: false,
   },
 ];
-
-export default initialItems;

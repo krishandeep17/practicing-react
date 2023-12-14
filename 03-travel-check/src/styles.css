@@ -32,6 +32,7 @@ body {
 .app {
   width: 100%;
   min-height: 100vh;
+  min-height: 100svh;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
 }
@@ -93,8 +94,13 @@ button {
   transition: all 0.3s;
 }
 
-button:active {
+button:not(:disabled):active {
   transform: scale(0.97);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  background-color: #6ab39c;
 }
 
 .btn-form {

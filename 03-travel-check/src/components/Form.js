@@ -4,7 +4,7 @@ const Form = ({ onAddItems }) => {
   const [quantity, setQuantity] = useState(1);
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
 
     if (!description) return;
@@ -20,7 +20,7 @@ const Form = ({ onAddItems }) => {
 
     setQuantity(1);
     setDescription("");
-  };
+  }
 
   return (
     <div className="add-form">
@@ -30,7 +30,7 @@ const Form = ({ onAddItems }) => {
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
         >
-          {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
             <option key={num} value={num}>
               {num}
             </option>
@@ -44,7 +44,7 @@ const Form = ({ onAddItems }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <button type="submit" className="btn-form">
+        <button disabled={!description} type="submit" className="btn-form">
           Add
         </button>
       </form>

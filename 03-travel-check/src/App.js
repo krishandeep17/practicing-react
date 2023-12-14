@@ -1,43 +1,43 @@
 import { useState } from "react";
 
-import initialItems from "./data";
 import { Form, Header, PackingList, Stats } from "./components";
+import { initialItems } from "./data";
 
 const App = () => {
   const [items, setItems] = useState(initialItems);
 
   // Add item in array
-  const handleAddItems = (item) => {
-    setItems((prevItems) => [...prevItems, item]);
-  };
+  function handleAddItem(newItem) {
+    setItems((items) => [...items, newItem]);
+  }
 
   // Delete item in array
-  const handleDeleteItem = (id) => {
+  function handleDeleteItem(id) {
     setItems((items) => items.filter((item) => item.id !== id));
-  };
+  }
 
   // Update item in array
-  const handleCheckItem = (id) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
+  function handleCheckItem(id) {
+    setItems((items) =>
+      items.map((item) =>
         item.id === id ? { ...item, packed: !item.packed } : item
       )
     );
-  };
+  }
 
   // Empty an array
-  const handleClearList = () => {
+  function handleClearList() {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete all items?"
     );
 
     if (isConfirmed) setItems([]);
-  };
+  }
 
   return (
     <div className="app">
       <Header />
-      <Form onAddItems={handleAddItems} />
+      <Form onAddItems={handleAddItem} />
       <PackingList
         items={items}
         onDeleteItem={handleDeleteItem}
