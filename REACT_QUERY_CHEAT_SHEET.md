@@ -33,15 +33,15 @@
 ## Installation
 
 ```
-  npm i @tanstack/react-query
+npm i @tanstack/react-query
 ```
 
 ```
-  npm i @tanstack/react-query-devtools
+npm i @tanstack/react-query-devtools
 ```
 
 ```
-  npm i -D @tanstack/eslint-plugin-query
+npm i -D @tanstack/eslint-plugin-query
 ```
 
 <div align="right">
@@ -87,7 +87,7 @@ const result = useQuery({ queryKey: ["todos"], queryFn: fetchTodoList });
 
 The `result` object contains a few very important states you'll need to be aware of to be productive. A query can only be in one of the following states at any given moment:
 
-- `isLoading` or `status === 'loading'` - The query has no data yet
+- `isPending` or `status === 'loading'` - The query has no data yet
 - `isError` or `status === 'error'` - The query encountered an error
 - `isSuccess` or `status === 'success'` - The query was successful and data is available
 
@@ -97,18 +97,18 @@ Beyond those primary states, more information is available depending on the stat
 - `data` - If the query is in an `isSuccess` state, the data is available via the `data` property.
 - `isFetching` - In any state, if the query is fetching at any time (including background refetching) `isFetching` will be `true`.
 
-For most queries, it's usually sufficient to check for the `isLoading` state, then the `isError` state, then finally, assume that the `data` is available and render the successful state:
+For most queries, it's usually sufficient to check for the `isPending` state, then the `isError` state, then finally, assume that the `data` is available and render the successful state:
 
 ```js
 import { useQuery } from "@tanstack/react-query";
 
 export default function Todos() {
-  const { isLoading, isError, data, error } = useQuery({
+  const { isPending, isError, data, error } = useQuery({
     queryKey: ["todos"], // unique key for the query
     queryFn: fetchTodoList, // function that returns a promise
   });
 
-  if (isLoading) {
+  if (isPending) {
     return <span>Loading...</span>;
   }
 
@@ -144,7 +144,7 @@ const mutation = useMutation({
 A mutation can only be in one of the following states at any given moment:
 
 - `isIdle` or `status === 'idle'` - The mutation is currently idle or in a fresh/reset state
-- `isLoading` or `status === 'loading'` - The mutation is currently running
+- `isPending` or `status === 'loading'` - The mutation is currently running
 - `isError` or `status === 'error'` - The mutation encountered an error
 - `isSuccess` or `status === 'success'` - The mutation was successful and mutation data is available
 
@@ -164,7 +164,7 @@ export default function AddTodo() {
 
   return (
     <div>
-      {mutation.isLoading ? (
+      {mutation.isPending ? (
         "Adding todo..."
       ) : (
         <>
