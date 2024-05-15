@@ -31,6 +31,10 @@
   - [Memoization](#memoization)
   - [Memo](#memo)
   - [useMemo and useCallback](#usememo-and-usecallback)
+- [Advanced React Pattern](#advanced-react-pattern)
+  - [Render Props Pattern](#render-props-pattern)
+  - [Higher Order Components (HOC)](#higher-order-components-hoc)
+  - [Compound Component Pattern](#compound-component-pattern)
 
 <div align="right">
     <b><a href="#table-of-contents">↥ Back To Top</a></b>
@@ -1069,6 +1073,305 @@ export default function Posts({ posts }) {
   // ...
 }
 ```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+## Advanced React Pattern
+
+### Render Props Pattern
+
+For complete control over **what** the component renders, by passing in a function that tells the component what to render. Was more common before hooks, but still useful.
+
+<details>
+<summary>View example</summary>
+
+[Open in CodeSandbox](https://codesandbox.io/p/sandbox/react-render-props-q2z5mr)
+
+```jsx
+import { useState } from "react";
+
+import { companies, products } from "./data";
+import "./styles.css";
+
+function ProductItem({ product }) {
+  return (
+    <li className="product">
+      <p className="product-name">{product.productName}</p>
+      <p className="product-price">${product.price}</p>
+      <p className="product-description">{product.description}</p>
+    </li>
+  );
+}
+
+function CompanyItem({ company, defaultVisibility }) {
+  const [isVisible, setIsVisible] = useState(defaultVisibility);
+
+  return (
+    <li
+      className="company"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      <p className="company-name">{company.companyName}</p>
+      {isVisible && (
+        <p className="company-phrase">
+          <strong>About:</strong> {company.phrase}
+        </p>
+      )}
+    </li>
+  );
+}
+
+function List({ title, items, render }) {
+  const [isOpen, setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const displayItems = isCollapsed ? items.slice(0, 3) : items;
+
+  function toggleOpen() {
+    setIsOpen((isOpen) => !isOpen);
+    setIsCollapsed(false);
+  }
+
+  return (
+    <div className="list-container">
+      <div className="heading">
+        <h2>{title}</h2>
+        <button onClick={toggleOpen}>
+          {isOpen ? <span>&or;</span> : <span>&and;</span>}
+        </button>
+      </div>
+      {isOpen && <ul className="list">{displayItems.map(render)}</ul>}
+
+      <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
+        {isCollapsed ? `Show all ${items.length}` : "Show less"}
+      </button>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <div>
+      <h1>Render Props Demo</h1>
+
+      <div className="col-2">
+        <List
+          title="Products"
+          items={products}
+          // Render Prop really always needs to be a function similar to this 👇 one
+          render={(product) => (
+            <ProductItem key={product.productName} product={product} />
+          )}
+        />
+
+        <List
+          title="Companies"
+          items={companies}
+          // Render Prop really always needs to be a function similar to this 👇 one
+          render={(company) => (
+            <CompanyItem
+              key={company.companyName}
+              company={company}
+              defaultVisibility={false}
+            />
+          )}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+</details>
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Higher Order Components (HOC)
+
+A higher order component is simply a component that takes in another component and then returns a new component that is better, so an enhanced version of the initial components
+
+> Note: Almost no one still write **Higher Order Component** by hand, but some libraries, do actually expose Higher Order Components.
+
+<details>
+  <summary>View example</summary>
+
+[Open in CodeSandbox](https://codesandbox.io/p/sandbox/relaxed-silence-jhvjy5)
+
+```jsx
+// App.jsx
+import { products } from "./data";
+import withToggles from "./HOC";
+import "./styles.css";
+
+function ProductItem({ product }) {
+  return (
+    <li className="product">
+      <p className="product-name">{product.productName}</p>
+      <p className="product-price">${product.price}</p>
+      <p className="product-description">{product.description}</p>
+    </li>
+  );
+}
+
+// LATER: Let's say we got this component from a 3rd-party library, and can't change it. But we still want to add the 2 toggle functionalities to it
+function ProductList({ title, items }) {
+  return (
+    <ul className="list">
+      {items.map((product) => (
+        <ProductItem key={product.productName} product={product} />
+      ))}
+    </ul>
+  );
+}
+
+const ProductListWithToggles = withToggles(ProductList);
+
+export default function App() {
+  return (
+    <div>
+      <h1>Higher Order Component Demo</h1>
+
+      <div className="col-2">
+        <ProductList title="Products" items={products} />
+        <ProductListWithToggles title="Products" items={products} />
+      </div>
+    </div>
+  );
+}
+```
+
+```jsx
+import { useState } from "react";
+
+// Naming Convention: "with + new functionality"
+export default function withToggles(WrappedComponent) {
+  return function List(props) {
+    const [isOpen, setIsOpen] = useState(true);
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    const displayItems = isCollapsed ? props.items.slice(0, 3) : props.items;
+
+    function toggleOpen() {
+      setIsOpen((isOpen) => !isOpen);
+      setIsCollapsed(false);
+    }
+
+    return (
+      <div className="list-container">
+        <div className="heading">
+          <h2>{props.title}</h2>
+          <button onClick={toggleOpen}>
+            {isOpen ? <span>&or;</span> : <span>&and;</span>}
+          </button>
+        </div>
+
+        {isOpen && <WrappedComponent {...props} items={displayItems} />}
+
+        <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
+          {isCollapsed ? `Show all ${props.items.length}` : "Show less"}
+        </button>
+      </div>
+    );
+  };
+}
+```
+
+</details>
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Compound Component Pattern
+
+For very self-contained components that need/want to manage their own state. Compound components are like fancy super-components.
+
+The idea of compound component is that we can create a set of related components that together achieve a common and useful task. <br />
+For example, implementing a counter, modal windows, pagination, tables, etc.
+
+<details>
+  <summary>View example</summary>
+
+[Open in CodeSandbox](https://codesandbox.io/p/sandbox/react-compound-components-cpjfs7)
+
+```jsx
+// App.jsx
+import Counter from "./Counter";
+import "./styles.css";
+
+export default function App() {
+  return (
+    <div>
+      <h1>Compound Component Pattern</h1>
+
+      <Counter>
+        <Counter.Label>My super flexible counter</Counter.Label>
+        <Counter.Decrease icon="-" />
+        <Counter.Count />
+        <Counter.Increase icon="+" />
+      </Counter>
+    </div>
+  );
+}
+```
+
+```jsx
+// Counter.jsx
+import { createContext, useContext, useState } from "react";
+
+// 1. Create a context
+const CounterContext = createContext();
+
+// 2. Create a parent component
+export default function Counter({ children }) {
+  const [count, setCount] = useState(0);
+
+  const decrement = () => setCount((c) => c - 1);
+  const increment = () => setCount((c) => c + 1);
+
+  return (
+    <CounterContext.Provider value={{ count, decrement, increment }}>
+      <div>{children}</div>
+    </CounterContext.Provider>
+  );
+}
+
+// 3. Create child components to help implementing the common task
+function Label({ children }) {
+  return <h2>{children}</h2>;
+}
+
+function Count() {
+  const { count } = useContext(CounterContext);
+
+  return <span>{count}</span>;
+}
+
+function Increase({ icon }) {
+  const { increment } = useContext(CounterContext);
+
+  return <button onClick={increment}>{icon}</button>;
+}
+
+function Decrease({ icon }) {
+  const { decrement } = useContext(CounterContext);
+
+  return <button onClick={decrement}>{icon}</button>;
+}
+
+// 4. Add child components as properties to parent component
+Counter.Label = Label;
+Counter.Count = Count;
+Counter.Increase = Increase;
+Counter.Decrease = Decrease;
+```
+
+</details>
 
 <div align="right">
     <b><a href="#table-of-contents">↥ Back To Top</a></b>
