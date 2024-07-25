@@ -14,6 +14,12 @@
   - [Add Slice Reducers to the Store](#add-slice-reducers-to-the-store)
   - [Use Redux State and Actions in React Components](#use-redux-state-and-actions-in-react-components)
   - [createAsyncThunk](#createasyncthunk)
+- [Redux Toolkit Query (RTK Query)](#redux-toolkit-query-rtk-query)
+  - [Install Redux Toolkit and React-Redux](#install-redux-toolkit-and-react-redux-1)
+  - [Create API services](#create-api-services)
+  - [Add the service to your store](#add-the-service-to-your-store)
+  - [Wrap your application with the Provider](#wrap-your-application-with-the-provider)
+  - [Use the query in a component](#use-the-query-in-a-component)
 - [Context API VS. Redux](#context-api-vs-redux)
 
 <div align="right">
@@ -474,6 +480,151 @@ const userSlice = createSlice({
       });
   },
 });
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+## Redux Toolkit Query (RTK Query)
+
+RTK Query is an advanced data fetching and caching tool, designed to simplify common cases for loading data in a web application. RTK Query itself is built on top of the Redux Toolkit core, and leverages RTK's APIs like `createSlice` and `createAsyncThunk` to implement its capabilities.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Install Redux Toolkit and React-Redux
+
+```
+npm install @reduxjs/toolkit react-redux
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Create API services
+
+#### apiSlice.js:
+
+This will be a base file to set up the `createApi` instance that other slices will use.
+
+```js
+// src/services/apiSlice.js
+// Need to use the React-specific entry point to import createApi
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+// initialize an empty api service that we'll inject endpoints into later as needed
+export const apiSlice = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  endpoints: () => ({}),
+});
+```
+
+#### productsApiSlice.js:
+
+Injecting & exporting additional endpoints
+
+```js
+// src/services/productsApiSlice.js
+import { apiSlice } from "./apiSlice";
+
+export const productsApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getProducts: builder.query({
+      query: () => "products",
+    }),
+    // Add more product endpoints as needed
+  }),
+});
+
+// Export hooks for usage in functional components, which are
+// auto-generated based on the defined endpoints
+export const { useGetProductsQuery } = productsApiSlice;
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Add the service to your store
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { apiSlice } from "./services/apiSlice";
+
+const store = configureStore({
+  reducer: {
+    // Add the generated reducer as a specific top-level slice
+    [apiSlice.reducerPath]: apiSlice.reducer,
+  },
+  // Adding the api middleware enables caching, invalidation, polling,
+  // and other useful features of `rtk-query`.
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiSlice.middleware),
+});
+
+// optional, but required for refetchOnFocus/refetchOnReconnect behaviors
+// see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
+setupListeners(store.dispatch);
+
+export default store;
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Wrap your application with the Provider
+
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+
+import App from "./App";
+import store from "./store";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Use the query in a component
+
+```js
+import { useGetProductsQuery } from "../../services/productsApiSlice";
+
+export default function Products() {
+  // Using a query hook automatically fetches data and returns query values
+  const { data: products, error, isLoading } = useGetProductsQuery();
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <h1>Products</h1>
+      <ul>
+        {products.map((product) => (
+          <li key={product.id}>{product.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 ```
 
 <div align="right">
