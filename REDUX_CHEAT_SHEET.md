@@ -518,6 +518,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // initialize an empty api service that we'll inject endpoints into later as needed
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  tagTypes: ["Product"],
   endpoints: () => ({}),
 });
 ```
@@ -534,14 +535,62 @@ export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => "products",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map((product) => ({
+                type: "Product",
+                id: product._id,
+              })),
+              { type: "Product", id: "LIST" },
+            ]
+          : [{ type: "Product", id: "LIST" }],
     }),
-    // Add more product endpoints as needed
+
+    addProduct: builder.mutation({
+      query: (newProduct) => ({
+        url: "products",
+        method: "POST",
+        body: newProduct,
+      }),
+      invalidatesTags: [{ type: "Product", id: "LIST" }],
+    }),
+
+    getProduct: builder.query({
+      query: (productId) => `products/${productId}`,
+      providesTags: (result, error, arg) => [{ type: "Product", id: arg }],
+    }),
+
+    updateProduct: builder.mutation({
+      query: (product) => ({
+        url: `products/${product._id}`,
+        method: "PATCH",
+        body: product,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Product", id: arg._id },
+      ],
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (productId) => ({
+        url: `products/${productId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg }],
+    }),
   }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetProductsQuery } = productsApiSlice;
+export const {
+  useAddProductMutation,
+  useDeleteProductMutation,
+  useGetProductQuery,
+  useGetProductsQuery,
+  useUpdateProductMutation,
+} = productsApiSlice;
 ```
 
 <div align="right">
@@ -623,6 +672,68 @@ export default function Products() {
         ))}
       </ul>
     </div>
+  );
+}
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ Back To Top</a></b>
+</div>
+
+### Use the mutation in a component
+
+```js
+import { useAddProductMutation } from "../../services/productsApiSlice";
+
+export default function AddProductForm() {
+  const [addProduct, { isLoading }] = useAddProductMutation();
+
+  const handleAddPost = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const newProduct = Object.fromEntries(formData.entries());
+
+    try {
+      await addProduct(newProduct).unwrap();
+    } catch (error) {
+      console.log("Failed to add product.");
+    }
+
+    event.currentTarget.reset();
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="name">Product Name</label>
+        <input type="text" id="name" name="name" />
+      </div>
+      <div>
+        <label htmlFor="description">Description</label>
+        <input type="text" id="description" name="description" />
+      </div>
+      <div>
+        <label htmlFor="price">Price</label>
+        <input type="number" id="price" name="price" />
+      </div>
+      <div>
+        <label htmlFor="category">Category</label>
+        <input type="text" id="category" name="category" />
+      </div>
+      <div>
+        <label htmlFor="brand">Brand</label>
+        <input type="text" id="brand" name="brand" />
+      </div>
+      <div>
+        <label htmlFor="stock">Stock</label>
+        <input type="number" id="stock" name="stock" />
+      </div>
+
+      <button type="submit" disabled={isLoading}>
+        Add Products
+      </button>
+    </form>
   );
 }
 ```
