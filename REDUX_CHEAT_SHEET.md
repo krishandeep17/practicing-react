@@ -20,6 +20,7 @@
   - [Add the service to your store](#add-the-service-to-your-store)
   - [Wrap your application with the Provider](#wrap-your-application-with-the-provider)
   - [Use the query in a component](#use-the-query-in-a-component)
+  - [Use the mutation in a component](#use-the-mutation-in-a-component)
 - [Context API VS. Redux](#context-api-vs-redux)
 
 <div align="right">
